@@ -32,9 +32,7 @@ All-in-one, zero-dependency plugin for **Google Antigravity 2.0** combining:
   - Switch between the 10 most recent conversations right from the panel.
 - **Instant 0-Token Slash Command (`/ctx`, `/чат`, `/chat`, `/tokens`)**
   - Intercepted locally by a `PreInvocation` hook (`./scripts/chat_tokens_hook.py`) before any model request is sent (**0 LLM tokens, 0 quota spent**).
-  - **Smart UI adaptation:** reads `userSettings.verboseConversationSteps` from `~/.gemini/config/config.json`:
-    - `Verbose` (`true`) → clean neutral `systemMessage` line (no `Error` prefix).
-    - `Default` (`false`) → `errorMessage.userMessage` fallback so the output is never hidden by collapsed system steps.
+  - Outputs via `errorMessage.userMessage` so the token count is guaranteed visible in both `Default` and `Verbose` conversation step modes without ever being sent to the model.
 - **100% Local & Zero Dependencies**
   - Uses only Node.js built-ins + Antigravity's built-in `sidecar_sdk`, and Python 3 standard library.
   - Read-only access to `~/.gemini/antigravity/brain/<conversationId>/.system_generated/logs/transcript.jsonl`.
@@ -86,10 +84,7 @@ Example output:
 Контекст: 128 991 токенов (+2 850) · кэш: 126 141 · шаг: 109
 ```
 
-#### `Conversation Steps: Verbose` vs `Default`
-In **Antigravity Settings → Appearance → Conversation Steps**:
-- **`Verbose`**: Antigravity displays `systemMessage` rows directly, so `/ctx` renders as a clean neutral row.
-- **`Default`**: Antigravity hides `systemMessage` rows, so the hook automatically uses `errorMessage` (shows an `Error` prefix) to guarantee the token count stays visible in chat.
+> **Note on display:** Because Antigravity 2.x hides empty `systemMessage` rows in chat, the hook injects the line via `errorMessage.userMessage` — the UI shows an `Error` prefix for this step type, while guaranteeing visibility in both `Default` and `Verbose` modes with 0 tokens sent to the model.
 
 ---
 

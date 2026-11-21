@@ -12,16 +12,6 @@ def fmt_num(n: int) -> str:
     return f"{n:,}".replace(",", " ")
 
 
-def is_verbose_steps_enabled() -> bool:
-    config_path = os.path.expanduser("~/.gemini/config/config.json")
-    try:
-        with open(config_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return bool(data.get("userSettings", {}).get("verboseConversationSteps", False))
-    except Exception:
-        return False
-
-
 def resolve_transcript(payload: dict) -> str | None:
     tp = payload.get("transcriptPath")
     if isinstance(tp, str) and tp and os.path.isfile(tp):
@@ -127,24 +117,14 @@ def main() -> None:
                 parts.append(f"сжатий: {stats['compaction_count']}×")
             msg = " · ".join(parts)
 
-    if is_verbose_steps_enabled():
-        step = {
-            "systemMessage": {
-                "systemMessage": "",
-                "renderInfo": {
-                    "title": msg,
-                },
-            }
-        }
-    else:
-        step = {
-            "errorMessage": {
-                "userMessage": msg,
-            }
-        }
-
     out = {
-        "injectSteps": [step],
+        "injectSteps": [
+            {
+                "errorMessage": {
+                    "userMessage": msg,
+                }
+            }
+        ],
         "terminationBehavior": "terminate",
     }
     print(json.dumps(out, ensure_ascii=False))
