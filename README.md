@@ -9,6 +9,18 @@ All-in-one, zero-dependency plugin for **Google Antigravity 2.0** combining:
 
 ---
 
+## Screenshots / Скриншоты
+
+<p align="center">
+  <img src="assets/context-monitor-panel.png" alt="Context Monitor Sidecar Panel" width="340" />
+</p>
+
+<p align="center">
+  <img src="assets/ctx-command.png" alt="/ctx 0-token command output" width="560" />
+</p>
+
+---
+
 ## Features / Возможности
 
 - **Live Sidecar Panel (`Context Monitor`)**
