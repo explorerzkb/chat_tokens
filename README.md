@@ -39,6 +39,12 @@ All-in-one, zero-dependency plugin for **Google Antigravity 2.0** combining:
 
 ## Installation / Установка
 
+### Option 1: Via Antigravity CLI (`agy`)
+```bash
+agy plugin install https://github.com/vladsboev-web/chat_tokens
+```
+
+### Option 2: Manual / Antigravity 2.0 Desktop (`git clone`)
 Clone (or copy) this repository into `~/.gemini/config/plugins/chat_tokens`:
 
 ```bash
