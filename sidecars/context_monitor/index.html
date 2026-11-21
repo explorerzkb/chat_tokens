@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Context Monitor</title>
+  <script src="/preload.js"></script>
+  <style>
+    :root {
+      --bg: var(--background, #f7f7f8);
+      --surface: var(--card, #ffffff);
+      --surface-muted: var(--muted, #f0f1f4);
+      --fg: var(--foreground, #171717);
+      --fg-muted: var(--muted-foreground, #6b7280);
+      --border-col: var(--border, rgba(128, 128, 128, 0.22));
+      --accent: #2563eb;
+      --green: #16a34a;
+      --green-bg: rgba(22, 163, 74, 0.14);
+      --amber: #d97706;
+      --amber-bg: rgba(217, 119, 6, 0.14);
+      --red: #dc2626;
+      --red-bg: rgba(220, 38, 38, 0.14);
+      --radius: 10px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html[data-theme="dark"] {
+      --bg: var(--background, #141416);
+      --surface: var(--card, #1d1e22);
+      --surface-muted: var(--muted, #26282e);
+      --fg: var(--foreground, #eceef2);
+      --fg-muted: var(--muted-foreground, #9ca3af);
+      --border-col: var(--border, rgba(255, 255, 255, 0.12));
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 12px;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--sans);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--fg-muted);
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border-col);
+      flex-shrink: 0;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border-col);
+      background: var(--surface);
+      color: var(--fg);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border-col);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .token-count {
+      font-size: 24px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .token-sub {
+      font-size: 12px;
+      color: var(--fg-muted);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    .pct-pill {
+      font-size: 12px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      padding: 2px 8px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .zone-green { color: var(--green); background: var(--green-bg); }
+    .zone-amber { color: var(--amber); background: var(--amber-bg); }
+    .zone-red { color: var(--red); background: var(--red-bg); }
+
+    .bar-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--surface-muted);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.25s ease, background-color 0.25s ease;
+    }
+
+    .fill-green { background: var(--green); }
+    .fill-amber { background: var(--amber); }
+    .fill-red { background: var(--red); }
+
+    .thresholds {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--fg-muted);
+    }
+
+    .seg {
+      display: inline-flex;
+      gap: 3px;
+      background: var(--surface-muted);
+      padding: 2px;
+      border-radius: 7px;
+      border: 1px solid var(--border-col);
+    }
+
+    .seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--fg-muted);
+      font-size: 11px;
+      font-family: var(--mono);
+      padding: 2px 7px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--fg);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .alert {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.35;
+      border: 1px solid transparent;
+    }
+
+    .alert-amber {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border-color: rgba(217, 119, 6, 0.3);
+    }
+
+    .alert-red {
+      background: var(--red-bg);
+      color: var(--red);
+      border-color: rgba(220, 38, 38, 0.3);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metric {
+      background: var(--surface);
+      border: 1px solid var(--border-col);
+      border-radius: var(--radius);
+      padding: 9px 10px;
+      min-width: 0;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--fg-muted);
+      margin-bottom: 2px;
+    }
+
+    .metric-val {
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mono {
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-col);
+      background: var(--surface);
+      color: var(--fg);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--surface-muted);
+    }
+
+    .btn-primary.copied {
+      color: var(--green);
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--fg-muted);
+      margin: 0 0 8px 0;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      padding: 4px 6px;
+      border-radius: 6px;
+      background: var(--surface-muted);
+    }
+
+    .step-id {
+      color: var(--fg-muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .step-delta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--fg-muted);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px 10px;
+      color: var(--fg-muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="stack">
+    <div class="header">
+      <div class="title-wrap">
+        <h1 class="title">Контекст чата</h1>
+      </div>
+      <span class="live-badge" id="live-badge" title="Автообновление каждые 2 секунды">
+        <span class="live-dot"></span>
+        <span id="live-time">Live</span>
+      </span>
+    </div>
+
+    <select id="conv-select" class="select" aria-label="Выбор чата"></select>
+
+    <div class="card">
+      <div class="hero-top">
+        <div>
+          <span class="token-count" id="token-count">—</span>
+          <span class="token-sub" id="token-limit-label">токенов</span>
+        </div>
+        <span class="pct-pill zone-green" id="pct-pill">0%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill fill-green" id="bar-fill" style="width: 0%"></div>
+      </div>
+      <div class="thresholds">
+        <span>Порог:</span>
+        <div class="seg" role="group" aria-label="Порог контекста">
+          <button type="button" class="seg-btn" data-limit="128000">128k</button>
+          <button type="button" class="seg-btn" data-limit="160000">160k</button>
+          <button type="button" class="seg-btn" data-limit="200000">200k</button>
+          <button type="button" class="seg-btn" data-limit="256000">256k</button>
+        </div>
+      </div>
+      <div class="alert hidden" id="alert-box" style="display:none"></div>
+    </div>
+
+    <div class="grid">
+      <div class="metric">
+        <div class="metric-label">Модель</div>
+        <div class="metric-val mono" id="m-model">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Последний шаг</div>
+        <div class="metric-val" id="m-delta">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Кэш промпта</div>
+        <div class="metric-val" id="m-cache">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Ходов / Пик</div>
+        <div class="metric-val" id="m-peak">—</div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-primary" id="handoff-btn">
+      Скопировать промпт для HANDOFF
+    </button>
+
+    <div class="card">
+      <h2 class="section-title">Последние ходы</h2>
+      <div class="steps" id="steps-list">
+        <div class="empty">Ожидание данных…</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const POLL_MS = 2000;
+      const STORAGE_LIMIT_KEY = 'agy_context_monitor_limit';
+      const HANDOFF_PROMPT =
+        'Мы приближаемся к порогу контекстного окна. Сохрани файл HANDOFF.md в корне проекта (или в артефакт) со строгой структурой:\n' +
+        '1. Изменённые и ключевые файлы (точные пути и что сделано).\n' +
+        '2. Что уже решено и проверено (точные команды и результаты).\n' +
+        '3. Строгие ограничения и неудачные попытки (чего НЕ делать и что не сработало).\n' +
+        '4. Конкретные следующие шаги для продолжения в новом чистом чате.';
+
+      const params = new URLSearchParams(location.search);
+      const $ = (id) => document.getElementById(id);
+
+      let selectedConvId = window.sidecar?.conversationId || params.get('conversationId') || '';
+      let followActive = !params.get('conversationId');
+      let limitTokens = Number(localStorage.getItem(STORAGE_LIMIT_KEY)) || 200000;
+      if (![128000, 160000, 200000, 256000].includes(limitTokens)) limitTokens = 200000;
+
+      function syncScheme() {
+        const probe = document.createElement('span');
+        probe.style.cssText = 'position:absolute;visibility:hidden;color:var(--background, #f7f7f8)';
+        document.documentElement.appendChild(probe);
+        const c = getComputedStyle(probe).color;
+        probe.remove();
+        const nums = (c.match(/[\d.]+/g) || []).map(Number);
+        if (nums.length < 3) return;
+        const scale = c.startsWith('color(') ? 1 : 255;
+        const [r, g, b] = nums.slice(0, 3).map((v) => v / scale);
+        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        document.documentElement.dataset.theme = lum < 0.5 ? 'dark' : 'light';
+      }
+      syncScheme();
+      new MutationObserver(syncScheme).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['style'],
+      });
+
+      const fmtNum = (n) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      const fmtK = (n) => `${Math.round((Number(n) || 0) / 1000)}k`;
+
+      function updateThresholdButtons() {
+        document.querySelectorAll('.seg-btn').forEach((btn) => {
+          btn.classList.toggle('active', Number(btn.dataset.limit) === limitTokens);
+        });
+      }
+      updateThresholdButtons();
+
+      document.querySelectorAll('.seg-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          limitTokens = Number(btn.dataset.limit);
+          localStorage.setItem(STORAGE_LIMIT_KEY, String(limitTokens));
+          updateThresholdButtons();
+          poll();
+        });
+      });
+
+      $('conv-select').addEventListener('change', (e) => {
+        selectedConvId = e.target.value;
+        followActive = false;
+        poll();
+      });
+
+      $('handoff-btn').addEventListener('click', async () => {
+        const btn = $('handoff-btn');
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(HANDOFF_PROMPT);
+          } else {
+            const ta = document.createElement('textarea');
+            ta.value = HANDOFF_PROMPT;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+          }
+          btn.textContent = 'Скопировано в буфер!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Скопировать промпт для HANDOFF';
+            btn.classList.remove('copied');
+          }, 1800);
+        } catch {
+          btn.textContent = 'Не удалось скопировать';
+        }
+      });
+
+      function render(data) {
+        const hostConv = window.sidecar?.conversationId || '';
+        if (followActive && hostConv && hostConv !== selectedConvId) {
+          selectedConvId = hostConv;
+        }
+
+        const select = $('conv-select');
+        const recent = Array.isArray(data.recent) ? data.recent : [];
+        const currentId = data.activeConversationId || '';
+        const prevValue = selectedConvId || currentId;
+
+        select.innerHTML = '';
+        if (recent.length === 0 && !currentId) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'Нет активных чатов';
+          select.appendChild(opt);
+        } else {
+          const seen = new Set();
+          if (currentId && !recent.some((r) => r.conversationId === currentId)) {
+            const opt = document.createElement('option');
+            opt.value = currentId;
+            opt.textContent = `Текущий чат (${currentId.slice(0, 8)})`;
+            select.appendChild(opt);
+            seen.add(currentId);
+          }
+          for (const item of recent) {
+            if (seen.has(item.conversationId)) continue;
+            seen.add(item.conversationId);
+            const opt = document.createElement('option');
+            opt.value = item.conversationId;
+            const prefix = hostConv && item.conversationId === hostConv ? '● ' : '';
+            opt.textContent = `${prefix}${item.title || item.conversationId.slice(0, 8)} (${fmtK(item.contextTokens)})`;
+            select.appendChild(opt);
+          }
+          if (prevValue) select.value = prevValue;
+        }
+
+        const stats = data.current;
+        if (!stats || !stats.exists) {
+          $('token-count').textContent = '0';
+          $('token-limit-label').textContent = `/ ${fmtK(limitTokens)} (новый чат)`;
+          $('pct-pill').textContent = '0%';
+          $('pct-pill').className = 'pct-pill zone-green';
+          $('bar-fill').style.width = '0%';
+          $('bar-fill').className = 'bar-fill fill-green';
+          $('m-model').textContent = '—';
+          $('m-delta').textContent = '—';
+          $('m-cache').textContent = '—';
+          $('m-peak').textContent = '—';
+          $('alert-box').style.display = 'none';
+          $('steps-list').innerHTML = '<div class="empty">Пока нет шагов модели</div>';
+          return;
+        }
+
+        const used = stats.contextTokens || 0;
+        const pct = Math.min(999, Math.round((used / limitTokens) * 100));
+        const barPct = Math.min(100, (used / limitTokens) * 100);
+        const zone = pct >= 85 ? 'red' : pct >= 70 ? 'amber' : 'green';
+
+        $('token-count').textContent = fmtNum(used);
+        $('token-limit-label').textContent = `/ ${fmtK(limitTokens)} токенов`;
+        $('pct-pill').textContent = `${pct}%`;
+        $('pct-pill').className = `pct-pill zone-${zone}`;
+        $('bar-fill').style.width = `${barPct.toFixed(1)}%`;
+        $('bar-fill').className = `bar-fill fill-${zone}`;
+
+        const alertBox = $('alert-box');
+        if (stats.compactionEvents > 0 || zone !== 'green') {
+          const msgs = [];
+          if (zone === 'red') {
+            msgs.push('Близко к авто-сжатию: рекомендуется сохранить HANDOFF.md и открыть новый чат.');
+          } else if (zone === 'amber') {
+            msgs.push('Контекст заполняется: лучше завершить текущую подзадачу и не смешивать темы.');
+          }
+          if (stats.compactionEvents > 0) {
+            msgs.push(`В этом чате уже было авто-сжатие (${stats.compactionEvents}×).`);
+          }
+          alertBox.textContent = msgs.join(' ');
+          alertBox.className = `alert ${zone === 'red' ? 'alert-red' : 'alert-amber'}`;
+          alertBox.style.display = 'block';
+        } else {
+          alertBox.style.display = 'none';
+        }
+
+        $('m-model').textContent = stats.model || '—';
+        $('m-model').title = stats.model || '';
+        const dSign = stats.lastDelta >= 0 ? '+' : '';
+        $('m-delta').textContent = stats.totalModelSteps > 0 ? `${dSign}${fmtNum(stats.lastDelta)}` : '—';
+        $('m-cache').textContent = `${fmtK(stats.lastCacheReadTokens)} (${stats.cacheHitPercent}%)`;
+        $('m-peak').textContent = `${stats.totalModelSteps} / ${fmtK(stats.peakTokens)}`;
+
+        const stepsEl = $('steps-list');
+        if (!stats.recentSteps || stats.recentSteps.length === 0) {
+          stepsEl.innerHTML = '<div class="empty">Пока нет шагов модели</div>';
+        } else {
+          stepsEl.innerHTML = stats.recentSteps
+            .slice(0, 6)
+            .map((s) => {
+              const sign = s.delta >= 0 ? '+' : '';
+              return (
+                `<div class="step-row">` +
+                `<span class="step-id">#${s.stepIndex}</span>` +
+                `<span>${fmtNum(s.contextTokens)}</span>` +
+                `<span class="step-delta">${sign}${fmtNum(s.delta)}</span>` +
+                `</div>`
+              );
+            })
+            .join('');
+        }
+
+        const now = new Date();
+        $('live-time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
+      async function poll() {
+        if (document.hidden) return;
+        try {
+          const targetConv = followActive ? (window.sidecar?.conversationId || selectedConvId) : selectedConvId;
+          const query = targetConv ? `?conversationId=${encodeURIComponent(targetConv)}` : '';
+          const fetcher = window.sidecar?.fetch ? window.sidecar.fetch.bind(window.sidecar) : fetch;
+          const res = await fetcher(`/api/context${query}`, { method: 'GET' });
+          if (!res.ok) return;
+          const data = await res.json();
+          render(data);
+        } catch {
+          // ignore transient poll errors
+        }
+      }
+
+      poll();
+      setInterval(poll, POLL_MS);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) poll();
+      });
+    })();
+  </script>
+</body>
+</html>

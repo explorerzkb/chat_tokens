@@ -1,0 +1,8 @@
+{
+  "name": "chat_tokens",
+  "version": "1.0.0",
+  "displayName": "Chat Tokens & Context Monitor",
+  "description": "Live Context Window Monitor side panel (Sidecar) + instant 0-token /ctx and /чат slash command for Antigravity 2.0.",
+  "author": "vladsboev-web",
+  "repository": "https://github.com/vladsboev-web/chat_tokens"
+}

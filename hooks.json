@@ -1,0 +1,11 @@
+{
+  "chat-context-command": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "python3 ./scripts/chat_tokens_hook.py",
+        "timeout": 5
+      }
+    ]
+  }
+}
