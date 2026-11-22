@@ -1,6 +1,6 @@
 # Chat Tokens & Context Monitor for Antigravity 2.0
 
-[![Version](https://img.shields.io/badge/version-1.0.0-orange)](https://github.com/vladsboev-web/chat_tokens/releases)
+[![Version](https://img.shields.io/badge/version-1.1.0-orange)](https://github.com/vladsboev-web/chat_tokens/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 All-in-one, zero-dependency plugin for **Google Antigravity 2.0** combining:
@@ -24,18 +24,22 @@ All-in-one, zero-dependency plugin for **Google Antigravity 2.0** combining:
 ## Features / Возможности
 
 - **Live Sidecar Panel (`Context Monitor`)**
-  - Real-time context window progress bar with selectable threshold presets (`128k`, `160k`, `200k`, `256k`).
+  - **Context & Stats tabs**: monitor live context window usage in the current chat alongside aggregated local usage stats for the current chat and across all chats (`24h / 7d`).
+  - **Selectable threshold presets** (`128k`, `160k`, `200k`, `256k`, `1M`) saved per user in `localStorage`.
+  - **Estimated Context Breakdown**: visual breakdown by category (*System & rules*, *Tools & files*, *Assistant & thinking*, *User messages*) plus total output and top tool call summary.
+  - **Messages / Steps toggle** in Recent activity with mode-aware metrics: *Primary model* (with `+N` other models indicator), *Last message / step delta*, *Cache hit ratio*, and *Messages / Steps vs. Peak*.
+  - **Compaction detection** — detects automatic context compaction via `CHECKPOINT` transcript events and drop heuristics, showing `⚡ compacted` badges in history and session alerts.
+  - **Automatic RU / EN localization** based on system locale, plus a manual **`RU / EN` toggle** in the panel header.
   - Automatic light/dark theme sync with Antigravity 2.0.
-  - Shows active model, last step delta (`+tokens`), prompt cache hit ratio, total model steps, peak tokens, and recent step history.
-  - **Compaction detection** — alerts when automatic context compaction has occurred in the current session.
   - **One-click `HANDOFF.md` prompt copy** — wrap up long sessions cleanly before auto-compaction erases fine-grained constraints.
   - Switch between the 10 most recent conversations right from the panel.
 - **Instant 0-Token Slash Command (`/ctx`, `/чат`, `/chat`, `/tokens`)**
+  - Both `/ctx` and `/чат` are registered in the `/` autocomplete menu (`skills/ctx/SKILL.md` and `skills/чат/SKILL.md`).
   - Intercepted locally by a `PreInvocation` hook (`./scripts/chat_tokens_hook.py`) before any model request is sent (**0 LLM tokens, 0 quota spent**).
-  - Outputs via `errorMessage.userMessage` so the token count is guaranteed visible in both `Default` and `Verbose` conversation step modes without ever being sent to the model.
+  - Outputs via `errorMessage.userMessage` so the token count (including compaction count when present) is guaranteed visible in both `Default` and `Verbose` conversation step modes without ever being sent to the model.
 - **100% Local & Zero Dependencies**
   - Uses only Node.js built-ins + Antigravity's built-in `sidecar_sdk`, and Python 3 standard library.
-  - Read-only access to `~/.gemini/antigravity/brain/<conversationId>/.system_generated/logs/transcript.jsonl`.
+  - Read-only access to `~/.gemini/antigravity/brain/<conversationId>/.system_generated/logs/` (`transcript_full.jsonl` / `transcript.jsonl`).
 
 ---
 
@@ -97,13 +101,15 @@ chat_tokens/
 ├── scripts/
 │   └── chat_tokens_hook.py            # 0-token local hook (/ctx, /чат, /chat, /tokens)
 ├── skills/
-│   └── ctx/
-│       └── SKILL.md                   # Registers /ctx in the '/' autocomplete menu
+│   ├── ctx/
+│   │   └── SKILL.md                   # Registers /ctx in the '/' autocomplete menu
+│   └── чат/
+│       └── SKILL.md                   # Registers /чат in the '/' autocomplete menu
 └── sidecars/
     └── context_monitor/
         ├── package.json               # ESM module marker
         ├── sidecar.json               # Auxiliary Pane UI registration
-        ├── main.mjs                   # Read-only transcript.jsonl HTTP server
+        ├── main.mjs                   # Read-only transcript HTTP server
         └── index.html                 # Sidecar frontend UI
 ```
 
@@ -112,7 +118,7 @@ chat_tokens/
 ## Privacy & Security / Приватность
 
 - No external network requests, no telemetry, no API calls.
-- All files are read-only against local Antigravity logs (`~/.gemini/antigravity/brain/`) and user config (`~/.gemini/config/config.json`).
+- All files are read-only against local Antigravity logs (`~/.gemini/antigravity/brain/`).
 
 ---
 

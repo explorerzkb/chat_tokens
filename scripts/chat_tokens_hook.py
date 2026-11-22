@@ -3,6 +3,7 @@
 
 import json
 import os
+import subprocess
 import sys
 
 COMMANDS = {"/чат", "/ctx", "/chat", "/tokens"}
@@ -10,6 +11,30 @@ COMMANDS = {"/чат", "/ctx", "/chat", "/tokens"}
 
 def fmt_num(n: int) -> str:
     return f"{n:,}".replace(",", " ")
+
+
+def resolve_language() -> str:
+    for env_key in ("LC_ALL", "LC_MESSAGES", "LANG"):
+        val = (os.environ.get(env_key) or "").lower()
+        if val.startswith("ru"):
+            return "ru"
+        if val.startswith("en"):
+            return "en"
+
+    if sys.platform == "darwin":
+        try:
+            res = subprocess.run(
+                ["defaults", "read", "-g", "AppleLanguages"],
+                capture_output=True,
+                text=True,
+                timeout=1,
+            )
+            if res.returncode == 0 and '"ru' in res.stdout.lower():
+                return "ru"
+        except Exception:
+            pass
+
+    return "en"
 
 
 def resolve_transcript(payload: dict) -> str | None:
@@ -31,7 +56,9 @@ def resolve_transcript(payload: dict) -> str | None:
 
 def compute_stats(transcript_path: str) -> dict:
     steps = []
-    peak = 0
+    all_time_peak = 0
+    segment_peak = 0
+    pending_compaction = False
     compaction_count = 0
 
     with open(transcript_path, "r", encoding="utf-8") as f:
@@ -43,16 +70,35 @@ def compute_stats(transcript_path: str) -> dict:
                 entry = json.loads(line)
             except Exception:
                 continue
+
+            if entry.get("type") == "CHECKPOINT":
+                compaction_count += 1
+                pending_compaction = True
+                segment_peak = 0
+                continue
+
             if isinstance(entry.get("input_tokens"), (int, float)):
                 in_tok = int(entry.get("input_tokens") or 0)
                 cache_tok = int(entry.get("cache_read_tokens") or 0)
                 total = in_tok + cache_tok
-                if peak > 0:
-                    drop = peak - total
-                    if drop > 25000 and (drop / peak) > 0.30:
+
+                if pending_compaction:
+                    pending_compaction = False
+                    segment_peak = total
+                elif segment_peak > 0:
+                    drop = segment_peak - total
+                    if drop > 25000 and (drop / segment_peak) > 0.30:
                         compaction_count += 1
-                if total > peak:
-                    peak = total
+                        segment_peak = total
+                    else:
+                        if total > segment_peak:
+                            segment_peak = total
+                else:
+                    segment_peak = total
+
+                if total > all_time_peak:
+                    all_time_peak = total
+
                 steps.append(
                     {
                         "total": total,
@@ -76,12 +122,40 @@ def compute_stats(transcript_path: str) -> dict:
         "total": last["total"],
         "in": last["in"],
         "cache": last["cache"],
-        "peak": peak,
+        "peak": all_time_peak,
         "delta": delta,
         "step_index": last["step_index"],
         "model": last["model"],
         "compaction_count": compaction_count,
     }
+
+
+def format_message(stats: dict | None, lang: str) -> str:
+    if not stats or stats.get("empty"):
+        return "Контекст: 0 токенов" if lang == "ru" else "Context: 0 tokens"
+
+    total = stats["total"]
+    delta = stats["delta"]
+    sign = "+" if delta >= 0 else ""
+
+    if lang == "ru":
+        parts = [
+            f"Контекст: {fmt_num(total)} токенов ({sign}{fmt_num(delta)})",
+            f"кэш: {fmt_num(stats['cache'])}",
+            f"шаг: {stats['step_index']}",
+        ]
+        if stats["compaction_count"] > 0:
+            parts.append(f"сжатий: {stats['compaction_count']}×")
+    else:
+        parts = [
+            f"Context: {fmt_num(total)} tokens ({sign}{fmt_num(delta)})",
+            f"cache: {fmt_num(stats['cache'])}",
+            f"step: {stats['step_index']}",
+        ]
+        if stats["compaction_count"] > 0:
+            parts.append(f"compactions: {stats['compaction_count']}×")
+
+    return " · ".join(parts)
 
 
 def main() -> None:
@@ -97,25 +171,10 @@ def main() -> None:
         print("{}")
         return
 
+    lang = resolve_language()
     tp = resolve_transcript(payload)
-    if not tp:
-        msg = "Контекст: 0 токенов"
-    else:
-        stats = compute_stats(tp)
-        if stats.get("empty"):
-            msg = "Контекст: 0 токенов"
-        else:
-            total = stats["total"]
-            delta = stats["delta"]
-            sign = "+" if delta >= 0 else ""
-            parts = [
-                f"Контекст: {fmt_num(total)} токенов ({sign}{fmt_num(delta)})",
-                f"кэш: {fmt_num(stats['cache'])}",
-                f"шаг: {stats['step_index']}",
-            ]
-            if stats["compaction_count"] > 0:
-                parts.append(f"сжатий: {stats['compaction_count']}×")
-            msg = " · ".join(parts)
+    stats = compute_stats(tp) if tp else None
+    msg = format_message(stats, lang)
 
     out = {
         "injectSteps": [

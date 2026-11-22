@@ -20,6 +20,10 @@
       --amber-bg: rgba(217, 119, 6, 0.14);
       --red: #dc2626;
       --red-bg: rgba(220, 38, 38, 0.14);
+      --purple: #8f6bf5;
+      --blue: #338cf5;
+      --teal: #24b88f;
+      --orange: #f28f2e;
       --radius: 10px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -78,6 +82,29 @@
       letter-spacing: -0.01em;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .lang-btn {
+      border: 1px solid var(--border-col);
+      background: var(--surface-muted);
+      color: var(--fg);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--mono);
+      padding: 2px 7px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .lang-btn:hover {
+      border-color: var(--accent);
+    }
+
     .live-badge {
       display: inline-flex;
       align-items: center;
@@ -102,6 +129,35 @@
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.35; }
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 3px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border-col);
+      border-radius: 8px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--fg-muted);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--fg);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     .select {
@@ -134,23 +190,21 @@
     .token-count {
       font-size: 24px;
       font-weight: 700;
-      font-variant-numeric: tabular-nums;
       letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
     }
 
     .token-sub {
       font-size: 12px;
       color: var(--fg-muted);
-      font-weight: 400;
-      margin-left: 4px;
     }
 
     .pct-pill {
       font-size: 12px;
       font-weight: 600;
-      font-variant-numeric: tabular-nums;
       padding: 2px 8px;
       border-radius: 999px;
+      font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
 
@@ -159,16 +213,15 @@
     .zone-red { color: var(--red); background: var(--red-bg); }
 
     .bar-track {
-      width: 100%;
       height: 8px;
       border-radius: 999px;
       background: var(--surface-muted);
       overflow: hidden;
-      margin-bottom: 10px;
     }
 
     .bar-fill {
       height: 100%;
+      width: 0%;
       border-radius: 999px;
       transition: width 0.25s ease, background-color 0.25s ease;
     }
@@ -177,13 +230,42 @@
     .fill-amber { background: var(--amber); }
     .fill-red { background: var(--red); }
 
-    .thresholds {
+    .presets-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
+      margin-top: 8px;
+    }
+
+    .presets-label {
       font-size: 11px;
       color: var(--fg-muted);
+      flex-shrink: 0;
+    }
+
+    .presets {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      border: 1px solid var(--border-col);
+      background: var(--surface-muted);
+      color: var(--fg-muted);
+      font-size: 11px;
+      font-family: var(--mono);
+      padding: 2px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .preset-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      font-weight: 600;
     }
 
     .seg {
@@ -234,6 +316,67 @@
       border-color: rgba(220, 38, 38, 0.3);
     }
 
+    .breakdown-bar {
+      display: flex;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--surface-muted);
+      overflow: hidden;
+      gap: 1px;
+      margin-bottom: 8px;
+    }
+
+    .breakdown-seg {
+      height: 100%;
+      min-width: 2px;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      min-width: 0;
+    }
+
+    .legend-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      color: var(--fg-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .legend-val {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .tools-footer {
+      margin-top: 7px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--fg-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -248,10 +391,19 @@
       min-width: 0;
     }
 
+    .metric.soft {
+      background: var(--surface-muted);
+      border-color: transparent;
+      padding: 7px 9px;
+    }
+
     .metric-label {
       font-size: 11px;
       color: var(--fg-muted);
       margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .metric-val {
@@ -292,13 +444,35 @@
       background: var(--green-bg);
     }
 
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
     .section-title {
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       color: var(--fg-muted);
-      margin: 0 0 8px 0;
+      margin: 0;
+    }
+
+    .sub-tag {
+      font-size: 10.5px;
+      color: var(--fg-muted);
+    }
+
+    .steps-cols {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--fg-muted);
+      padding: 0 6px 4px 6px;
     }
 
     .steps {
@@ -319,6 +493,25 @@
       background: var(--surface-muted);
     }
 
+    .step-row.compacted {
+      background: var(--amber-bg);
+    }
+
+    .step-mid {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .compact-pill {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--amber);
+      background: rgba(217, 119, 6, 0.16);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
     .step-id {
       color: var(--fg-muted);
       font-family: var(--mono);
@@ -331,11 +524,42 @@
       color: var(--fg-muted);
     }
 
+    .meta-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--fg-muted);
+    }
+
+    .meta-val {
+      font-family: var(--mono);
+      color: var(--fg);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .subhead {
+      margin: 10px 0 6px 0;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-col);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--fg-muted);
+    }
+
     .empty {
       text-align: center;
-      padding: 20px 10px;
+      padding: 16px 10px;
       color: var(--fg-muted);
       font-size: 12px;
+    }
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -343,66 +567,175 @@
   <div class="stack">
     <div class="header">
       <div class="title-wrap">
-        <h1 class="title">Контекст чата</h1>
+        <h1 class="title" id="ui-title">Контекст чата</h1>
       </div>
-      <span class="live-badge" id="live-badge" title="Автообновление каждые 2 секунды">
-        <span class="live-dot"></span>
-        <span id="live-time">Live</span>
-      </span>
+      <div class="header-right">
+        <button type="button" class="lang-btn" id="lang-btn" title="RU / EN">RU</button>
+        <span class="live-badge" id="live-badge" title="Автообновление каждые 2 секунды">
+          <span class="live-dot"></span>
+          <span id="live-time">Live</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="tabbar" role="tablist">
+      <button type="button" class="tab-btn active" id="tab-context" data-tab="context">Контекст</button>
+      <button type="button" class="tab-btn" id="tab-stats" data-tab="stats">Статистика</button>
     </div>
 
     <select id="conv-select" class="select" aria-label="Выбор чата"></select>
 
-    <div class="card">
-      <div class="hero-top">
-        <div>
-          <span class="token-count" id="token-count">—</span>
-          <span class="token-sub" id="token-limit-label">токенов</span>
+    <!-- TAB 1: CONTEXT -->
+    <div id="view-context" class="stack">
+      <div class="card">
+        <div class="hero-top">
+          <div>
+            <span class="token-count" id="token-count">—</span>
+            <span class="token-sub" id="token-limit-label">токенов</span>
+          </div>
+          <span class="pct-pill zone-green" id="pct-pill">0%</span>
         </div>
-        <span class="pct-pill zone-green" id="pct-pill">0%</span>
+        <div class="bar-track">
+          <div class="bar-fill fill-green" id="bar-fill" style="width: 0%"></div>
+        </div>
+        <div class="presets-row">
+          <span class="presets-label" id="lbl-threshold">Порог</span>
+          <div class="presets" id="threshold-presets" role="group">
+            <button type="button" class="preset-btn" data-limit="128000">128k</button>
+            <button type="button" class="preset-btn" data-limit="160000">160k</button>
+            <button type="button" class="preset-btn" data-limit="200000">200k</button>
+            <button type="button" class="preset-btn" data-limit="256000">256k</button>
+            <button type="button" class="preset-btn" data-limit="1000000">1M</button>
+          </div>
+        </div>
+        <div class="alert hidden" id="alert-box"></div>
       </div>
-      <div class="bar-track">
-        <div class="bar-fill fill-green" id="bar-fill" style="width: 0%"></div>
+
+      <div class="card">
+        <div class="section-head">
+          <h2 class="section-title" id="lbl-breakdown">Структура контекста</h2>
+          <span class="sub-tag" id="lbl-estimate">оценка</span>
+        </div>
+        <div class="breakdown-bar" id="breakdown-bar"></div>
+        <div class="legend-grid" id="breakdown-legend"></div>
+        <div class="tools-footer hidden" id="tools-footer"></div>
       </div>
-      <div class="thresholds">
-        <span>Порог:</span>
-        <div class="seg" role="group" aria-label="Порог контекста">
-          <button type="button" class="seg-btn" data-limit="128000">128k</button>
-          <button type="button" class="seg-btn" data-limit="160000">160k</button>
-          <button type="button" class="seg-btn" data-limit="200000">200k</button>
-          <button type="button" class="seg-btn" data-limit="256000">256k</button>
+
+      <div class="grid">
+        <div class="metric">
+          <div class="metric-label" id="lbl-model">Основная модель</div>
+          <div class="metric-val mono" id="m-model">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label" id="lbl-delta">Последнее сообщение</div>
+          <div class="metric-val" id="m-delta">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label" id="lbl-cache">Кэш (посл. сообщ.)</div>
+          <div class="metric-val" id="m-cache">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label" id="lbl-peak">Сообщений / Пик</div>
+          <div class="metric-val" id="m-peak">—</div>
         </div>
       </div>
-      <div class="alert hidden" id="alert-box" style="display:none"></div>
+
+      <button type="button" class="btn-primary" id="handoff-btn">
+        Скопировать промпт для HANDOFF
+      </button>
+
+      <div class="card">
+        <div class="section-head">
+          <h2 class="section-title" id="lbl-recent">Последние ходы</h2>
+          <div class="seg" role="group">
+            <button type="button" class="seg-btn" id="mode-messages" data-mode="messages">Сообщения</button>
+            <button type="button" class="seg-btn" id="mode-steps" data-mode="steps">Шаги</button>
+          </div>
+        </div>
+        <div class="steps-cols" id="steps-cols" style="display:none">
+          <span id="col-idx">Сообщ.</span>
+          <span id="col-ctx">Контекст</span>
+          <span id="col-delta">Прирост</span>
+        </div>
+        <div class="steps" id="steps-list">
+          <div class="empty" id="lbl-waiting">Ожидание данных…</div>
+        </div>
+      </div>
     </div>
 
-    <div class="grid">
-      <div class="metric">
-        <div class="metric-label">Модель</div>
-        <div class="metric-val mono" id="m-model">—</div>
+    <!-- TAB 2: STATS -->
+    <div id="view-stats" class="stack hidden">
+      <div class="card">
+        <div class="section-head">
+          <h2 class="section-title" id="lbl-stats-chat">Текущий чат</h2>
+        </div>
+        <div id="chat-stats-empty" class="empty hidden"></div>
+        <div id="chat-stats-body">
+          <div class="grid">
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-st-fresh">Свежий вход</div>
+              <div class="metric-val" id="st-fresh">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-st-cache">Из кэша</div>
+              <div class="metric-val" id="st-cache">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-st-out">Вывод (ответы)</div>
+              <div class="metric-val" id="st-out">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-st-avgcache">Средний кэш</div>
+              <div class="metric-val" id="st-avgcache">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-st-dur">Длительность</div>
+              <div class="metric-val" id="st-dur">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-st-mediaerr">Вложения / Ошибки</div>
+              <div class="metric-val" id="st-mediaerr">—</div>
+            </div>
+          </div>
+          <div class="meta-line hidden" id="st-tools-row">
+            <span id="lbl-st-tools">Инструменты</span>
+            <span class="meta-val" id="st-tools">—</span>
+          </div>
+          <div class="subhead" id="lbl-st-models">Модели в чате</div>
+          <div class="steps" id="st-models-list"></div>
+        </div>
       </div>
-      <div class="metric">
-        <div class="metric-label">Последний шаг</div>
-        <div class="metric-val" id="m-delta">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Кэш промпта</div>
-        <div class="metric-val" id="m-cache">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Ходов / Пик</div>
-        <div class="metric-val" id="m-peak">—</div>
-      </div>
-    </div>
 
-    <button type="button" class="btn-primary" id="handoff-btn">
-      Скопировать промпт для HANDOFF
-    </button>
-
-    <div class="card">
-      <h2 class="section-title">Последние ходы</h2>
-      <div class="steps" id="steps-list">
-        <div class="empty">Ожидание данных…</div>
+      <div class="card">
+        <div class="section-head">
+          <h2 class="section-title" id="lbl-stats-all">Все чаты</h2>
+          <div class="seg" role="group">
+            <button type="button" class="seg-btn" id="period-24" data-hours="24">24ч</button>
+            <button type="button" class="seg-btn" id="period-168" data-hours="168">7дн</button>
+          </div>
+        </div>
+        <div id="period-stats-empty" class="empty hidden"></div>
+        <div id="period-stats-body">
+          <div class="grid">
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-p-chats">Активных чатов</div>
+              <div class="metric-val" id="p-chats">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-p-calls">Запросов к моделям</div>
+              <div class="metric-val" id="p-calls">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-p-inout">Вход + вывод</div>
+              <div class="metric-val" id="p-inout">—</div>
+            </div>
+            <div class="metric soft">
+              <div class="metric-label" id="lbl-p-cache">Из кэша</div>
+              <div class="metric-val" id="p-cache">—</div>
+            </div>
+          </div>
+          <div class="steps" id="p-models-list" style="margin-top:8px"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -410,21 +743,238 @@
   <script>
     (() => {
       const POLL_MS = 2000;
-      const STORAGE_LIMIT_KEY = 'agy_context_monitor_limit';
-      const HANDOFF_PROMPT =
-        'Мы приближаемся к порогу контекстного окна. Сохрани файл HANDOFF.md в корне проекта (или в артефакт) со строгой структурой:\n' +
-        '1. Изменённые и ключевые файлы (точные пути и что сделано).\n' +
-        '2. Что уже решено и проверено (точные команды и результаты).\n' +
-        '3. Строгие ограничения и неудачные попытки (чего НЕ делать и что не сработало).\n' +
-        '4. Конкретные следующие шаги для продолжения в новом чистом чате.';
+      const HISTORY_MODE_KEY = 'agy_context_history_mode';
+      const PERIOD_KEY = 'agy_context_stats_period';
+      const THRESHOLD_KEY = 'agy_context_threshold';
+      const LANG_KEY = 'agy_context_lang';
+
+      const I18N = {
+        ru: {
+          title: 'Контекст чата',
+          liveHint: 'Автообновление каждые 2 секунды',
+          thresholdLabel: 'Порог',
+          tabContext: 'Контекст',
+          tabStats: 'Статистика',
+          noChats: 'Нет активных чатов',
+          currentChat: 'Текущий чат',
+          newChat: 'новый чат',
+          tokens: 'токенов',
+          breakdown: 'Структура контекста',
+          estimate: 'оценка',
+          segSystem: 'Система и правила',
+          segTools: 'Инструменты и файлы',
+          segAssistant: 'Ответы и мысли',
+          segUser: 'Сообщения',
+          footer: (outK, count, tail) => `Вывод: ${outK} · Инструментов: ${count}${tail}`,
+          primaryModel: 'Основная модель',
+          lastMsg: 'Последнее сообщение',
+          lastStep: 'Последний шаг',
+          cacheMsg: 'Кэш (посл. сообщ.)',
+          cacheStep: 'Кэш (посл. шаг)',
+          msgPeak: 'Сообщений / Пик',
+          stepPeak: 'Шагов / Пик',
+          handoffBtn: 'Скопировать промпт для HANDOFF',
+          copiedBtn: 'Скопировано в буфер!',
+          copyFailed: 'Не удалось скопировать',
+          recentTitle: 'Последние ходы',
+          modeMessages: 'Сообщения',
+          modeSteps: 'Шаги',
+          colMsg: 'Сообщ.',
+          colStep: 'Шаг',
+          colCtx: 'Контекст',
+          colDelta: 'Прирост',
+          waiting: 'Ожидание данных…',
+          noSteps: 'Пока нет шагов модели',
+          compactedPill: '⚡ сжатие',
+          alertRed: 'Близко к авто-сжатию: рекомендуется сохранить HANDOFF.md и открыть новый чат.',
+          alertAmber: 'Контекст заполняется: лучше завершить текущую подзадачу и не смешивать темы.',
+          alertCompaction: (n) => `В этом чате уже было авто-сжатие (${n}×).`,
+          statsCurrentChat: 'Текущий чат',
+          freshInput: 'Свежий вход',
+          fromCache: 'Из кэша',
+          output: 'Вывод (ответы)',
+          avgCache: 'Средний кэш',
+          duration: 'Длительность',
+          mediaErrors: 'Вложения / Ошибки',
+          tools: 'Инструменты',
+          modelsInChat: 'Модели в чате',
+          stepsShort: (n) => `${n} шаг.`,
+          allChats: 'Все чаты',
+          period24: '24ч',
+          period168: '7дн',
+          activeChats: 'Активных чатов',
+          modelCalls: 'Запросов к моделям',
+          inPlusOut: 'Вход + вывод',
+          noPeriodActivity: 'Нет активности за выбранный период',
+          handoffPrompt:
+            'Мы приближаемся к порогу контекстного окна. Сохрани файл HANDOFF.md в корне проекта (или в артефакт) со строгой структурой:\n' +
+            '1. Изменённые и ключевые файлы (точные пути и что сделано).\n' +
+            '2. Что уже решено и проверено (точные команды и результаты).\n' +
+            '3. Строгие ограничения и неудачные попытки (чего НЕ делать и что не сработало).\n' +
+            '4. Конкретные следующие шаги для продолжения в новом чистом чате.',
+        },
+        en: {
+          title: 'Chat Context',
+          liveHint: 'Auto-refreshes every 2 seconds',
+          thresholdLabel: 'Threshold',
+          tabContext: 'Context',
+          tabStats: 'Stats',
+          noChats: 'No active chats',
+          currentChat: 'Current chat',
+          newChat: 'new chat',
+          tokens: 'tokens',
+          breakdown: 'Context breakdown',
+          estimate: 'estimate',
+          segSystem: 'System & rules',
+          segTools: 'Tools & files',
+          segAssistant: 'Assistant & thinking',
+          segUser: 'User messages',
+          footer: (outK, count, tail) => `Output: ${outK} · Tools: ${count}${tail}`,
+          primaryModel: 'Primary model',
+          lastMsg: 'Last message',
+          lastStep: 'Last step',
+          cacheMsg: 'Cache (last msg)',
+          cacheStep: 'Cache (last step)',
+          msgPeak: 'Messages / Peak',
+          stepPeak: 'Steps / Peak',
+          handoffBtn: 'Copy HANDOFF prompt',
+          copiedBtn: 'Copied to clipboard!',
+          copyFailed: 'Copy failed',
+          recentTitle: 'Recent activity',
+          modeMessages: 'Messages',
+          modeSteps: 'Steps',
+          colMsg: 'Msg',
+          colStep: 'Step',
+          colCtx: 'Context',
+          colDelta: 'Delta',
+          waiting: 'Waiting for data…',
+          noSteps: 'No model steps yet',
+          compactedPill: '⚡ compacted',
+          alertRed: 'Near auto-compaction: save HANDOFF.md and continue in a fresh chat.',
+          alertAmber: 'Context filling up: finish the current subtask without mixing topics.',
+          alertCompaction: (n) => `Auto-compaction occurred in this chat (${n}×).`,
+          statsCurrentChat: 'Current chat',
+          freshInput: 'Fresh input',
+          fromCache: 'From cache',
+          output: 'Output',
+          avgCache: 'Avg cache',
+          duration: 'Duration',
+          mediaErrors: 'Media / Errors',
+          tools: 'Tools',
+          modelsInChat: 'Models in chat',
+          stepsShort: (n) => `${n} steps`,
+          allChats: 'All chats',
+          period24: '24h',
+          period168: '7d',
+          activeChats: 'Active chats',
+          modelCalls: 'Model calls',
+          inPlusOut: 'Input + output',
+          noPeriodActivity: 'No activity in this period',
+          handoffPrompt:
+            'We are approaching the context window threshold. Save a HANDOFF.md file in the project root (or as an artifact) with this strict structure:\n' +
+            '1. Modified and key files (exact paths and what changed).\n' +
+            '2. What has been resolved and verified (exact commands and results).\n' +
+            '3. Strict constraints and failed attempts (what NOT to do and what did not work).\n' +
+            '4. Concrete next steps to continue cleanly in a fresh chat.',
+        },
+      };
 
       const params = new URLSearchParams(location.search);
       const $ = (id) => document.getElementById(id);
 
       let selectedConvId = window.sidecar?.conversationId || params.get('conversationId') || '';
       let followActive = !params.get('conversationId');
-      let limitTokens = Number(localStorage.getItem(STORAGE_LIMIT_KEY)) || 200000;
-      if (![128000, 160000, 200000, 256000].includes(limitTokens)) limitTokens = 200000;
+      const savedThreshold = Number(localStorage.getItem(THRESHOLD_KEY));
+      let limitTokens = Number.isFinite(savedThreshold) && savedThreshold >= 10000 ? savedThreshold : 200000;
+      const savedLang = localStorage.getItem(LANG_KEY);
+      let hasManualLang = savedLang === 'ru' || savedLang === 'en';
+      let lang = hasManualLang
+        ? savedLang
+        : ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en');
+      let historyMode = localStorage.getItem(HISTORY_MODE_KEY) === 'steps' ? 'steps' : 'messages';
+      let activeTab = 'context';
+      let periodHours = Number(localStorage.getItem(PERIOD_KEY)) === 168 ? 168 : 24;
+      let lastData = null;
+
+      function t() {
+        return I18N[lang] || I18N.en;
+      }
+
+      const fmtNum = (n) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      const fmtK = (n) => `${Math.round((Number(n) || 0) / 1000)}k`;
+      const fmtCompact = (n) => {
+        const v = Number(n) || 0;
+        if (v >= 1000000) return v % 1000000 === 0 ? `${v / 1000000}M` : `${(v / 1000000).toFixed(1)}M`;
+        if (v >= 1000) return fmtK(v);
+        return String(v);
+      };
+      const fmtDuration = (secs) => {
+        const s = Number(secs) || 0;
+        if (s <= 0) return '—';
+        if (s < 60) return lang === 'ru' ? '<1м' : '<1m';
+        const totalMin = Math.floor(s / 60);
+        const days = Math.floor(totalMin / (24 * 60));
+        const hours = Math.floor((totalMin % (24 * 60)) / 60);
+        const mins = totalMin % 60;
+        if (days > 0) return lang === 'ru' ? `${days}д ${hours}ч` : `${days}d ${hours}h`;
+        if (hours > 0) return lang === 'ru' ? `${hours}ч ${mins}м` : `${hours}h ${mins}m`;
+        return lang === 'ru' ? `${mins}м` : `${mins}m`;
+      };
+
+      function applyStaticLabels() {
+        const s = t();
+        document.documentElement.lang = lang;
+        $('ui-title').textContent = s.title;
+        $('lang-btn').textContent = lang.toUpperCase();
+        $('live-badge').title = s.liveHint;
+        $('lbl-threshold').textContent = s.thresholdLabel;
+        document.querySelectorAll('#threshold-presets .preset-btn').forEach((btn) => {
+          btn.classList.toggle('active', Number(btn.dataset.limit) === limitTokens);
+        });
+        $('tab-context').textContent = s.tabContext;
+        $('tab-stats').textContent = s.tabStats;
+        $('tab-context').classList.toggle('active', activeTab === 'context');
+        $('tab-stats').classList.toggle('active', activeTab === 'stats');
+        $('view-context').classList.toggle('hidden', activeTab !== 'context');
+        $('view-stats').classList.toggle('hidden', activeTab !== 'stats');
+
+        $('lbl-breakdown').textContent = s.breakdown;
+        $('lbl-estimate').textContent = s.estimate;
+        $('lbl-model').textContent = s.primaryModel;
+        $('lbl-delta').textContent = historyMode === 'messages' ? s.lastMsg : s.lastStep;
+        $('lbl-cache').textContent = historyMode === 'messages' ? s.cacheMsg : s.cacheStep;
+        $('lbl-peak').textContent = historyMode === 'messages' ? s.msgPeak : s.stepPeak;
+        if (!$('handoff-btn').classList.contains('copied')) {
+          $('handoff-btn').textContent = s.handoffBtn;
+        }
+        $('lbl-recent').textContent = s.recentTitle;
+        $('mode-messages').textContent = s.modeMessages;
+        $('mode-steps').textContent = s.modeSteps;
+        $('mode-messages').classList.toggle('active', historyMode === 'messages');
+        $('mode-steps').classList.toggle('active', historyMode === 'steps');
+        $('col-idx').textContent = historyMode === 'messages' ? s.colMsg : s.colStep;
+        $('col-ctx').textContent = s.colCtx;
+        $('col-delta').textContent = s.colDelta;
+
+        $('lbl-stats-chat').textContent = s.statsCurrentChat;
+        $('lbl-st-fresh').textContent = s.freshInput;
+        $('lbl-st-cache').textContent = s.fromCache;
+        $('lbl-st-out').textContent = s.output;
+        $('lbl-st-avgcache').textContent = s.avgCache;
+        $('lbl-st-dur').textContent = s.duration;
+        $('lbl-st-mediaerr').textContent = s.mediaErrors;
+        $('lbl-st-tools').textContent = s.tools;
+        $('lbl-st-models').textContent = s.modelsInChat;
+        $('lbl-stats-all').textContent = s.allChats;
+        $('period-24').textContent = s.period24;
+        $('period-168').textContent = s.period168;
+        $('period-24').classList.toggle('active', periodHours === 24);
+        $('period-168').classList.toggle('active', periodHours === 168);
+        $('lbl-p-chats').textContent = s.activeChats;
+        $('lbl-p-calls').textContent = s.modelCalls;
+        $('lbl-p-inout').textContent = s.inPlusOut;
+        $('lbl-p-cache').textContent = s.fromCache;
+      }
 
       function syncScheme() {
         const probe = document.createElement('span');
@@ -445,21 +995,49 @@
         attributeFilter: ['style'],
       });
 
-      const fmtNum = (n) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-      const fmtK = (n) => `${Math.round((Number(n) || 0) / 1000)}k`;
+      applyStaticLabels();
 
-      function updateThresholdButtons() {
-        document.querySelectorAll('.seg-btn').forEach((btn) => {
-          btn.classList.toggle('active', Number(btn.dataset.limit) === limitTokens);
+      $('lang-btn').addEventListener('click', () => {
+        lang = lang === 'ru' ? 'en' : 'ru';
+        hasManualLang = true;
+        localStorage.setItem(LANG_KEY, lang);
+        applyStaticLabels();
+        if (lastData) render(lastData);
+      });
+
+      document.querySelectorAll('#threshold-presets .preset-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const val = Number(e.currentTarget.dataset.limit);
+          if (!Number.isFinite(val) || val < 10000) return;
+          limitTokens = val;
+          localStorage.setItem(THRESHOLD_KEY, String(limitTokens));
+          applyStaticLabels();
+          if (lastData) render(lastData);
         });
-      }
-      updateThresholdButtons();
+      });
 
-      document.querySelectorAll('.seg-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          limitTokens = Number(btn.dataset.limit);
-          localStorage.setItem(STORAGE_LIMIT_KEY, String(limitTokens));
-          updateThresholdButtons();
+      ['tab-context', 'tab-stats'].forEach((id) => {
+        $(id).addEventListener('click', (e) => {
+          activeTab = e.currentTarget.dataset.tab === 'stats' ? 'stats' : 'context';
+          applyStaticLabels();
+          poll();
+        });
+      });
+
+      ['mode-messages', 'mode-steps'].forEach((id) => {
+        $(id).addEventListener('click', (e) => {
+          historyMode = e.currentTarget.dataset.mode === 'steps' ? 'steps' : 'messages';
+          localStorage.setItem(HISTORY_MODE_KEY, historyMode);
+          applyStaticLabels();
+          if (lastData) render(lastData);
+        });
+      });
+
+      ['period-24', 'period-168'].forEach((id) => {
+        $(id).addEventListener('click', (e) => {
+          periodHours = Number(e.currentTarget.dataset.hours) === 168 ? 168 : 24;
+          localStorage.setItem(PERIOD_KEY, String(periodHours));
+          applyStaticLabels();
           poll();
         });
       });
@@ -472,34 +1050,149 @@
 
       $('handoff-btn').addEventListener('click', async () => {
         const btn = $('handoff-btn');
+        const prompt = t().handoffPrompt;
         try {
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            await navigator.clipboard.writeText(HANDOFF_PROMPT);
+            await navigator.clipboard.writeText(prompt);
           } else {
             const ta = document.createElement('textarea');
-            ta.value = HANDOFF_PROMPT;
+            ta.value = prompt;
             document.body.appendChild(ta);
             ta.select();
             document.execCommand('copy');
             ta.remove();
           }
-          btn.textContent = 'Скопировано в буфер!';
+          btn.textContent = t().copiedBtn;
           btn.classList.add('copied');
           setTimeout(() => {
-            btn.textContent = 'Скопировать промпт для HANDOFF';
+            btn.textContent = t().handoffBtn;
             btn.classList.remove('copied');
           }, 1800);
         } catch {
-          btn.textContent = 'Не удалось скопировать';
+          btn.textContent = t().copyFailed;
         }
       });
 
+      function renderBreakdown(stats, s) {
+        const b = stats?.breakdown || {
+          systemTokens: 0,
+          toolsTokens: 0,
+          assistantTokens: 0,
+          userTokens: 0,
+          totalOutputTokens: 0,
+          toolCallsCount: 0,
+          topTools: [],
+        };
+        const used = stats?.contextTokens || 0;
+        const denom = Math.max(1, Math.max(limitTokens, used));
+        const segments = [
+          { label: s.segSystem, tokens: b.systemTokens || 0, color: 'var(--purple)' },
+          { label: s.segTools, tokens: b.toolsTokens || 0, color: 'var(--blue)' },
+          { label: s.segAssistant, tokens: b.assistantTokens || 0, color: 'var(--teal)' },
+          { label: s.segUser, tokens: b.userTokens || 0, color: 'var(--orange)' },
+        ];
+
+        $('breakdown-bar').innerHTML = segments
+          .filter((seg) => seg.tokens > 0)
+          .map((seg) => {
+            const pct = Math.max(0.8, (seg.tokens / denom) * 100);
+            return `<div class="breakdown-seg" style="width:${pct.toFixed(2)}%;background:${seg.color}"></div>`;
+          })
+          .join('');
+
+        $('breakdown-legend').innerHTML = segments
+          .map((seg) => {
+            const pctLim = limitTokens > 0 ? Math.round((seg.tokens / limitTokens) * 100) : 0;
+            const valText = stats && stats.totalModelSteps > 0 ? `${fmtK(seg.tokens)} (${pctLim}%)` : '—';
+            return (
+              `<div class="legend-item">` +
+              `<span class="legend-dot" style="background:${seg.color}"></span>` +
+              `<span class="legend-name" title="${seg.label}">${seg.label}</span>` +
+              `<span class="legend-val">${valText}</span>` +
+              `</div>`
+            );
+          })
+          .join('');
+
+        const footer = $('tools-footer');
+        if (stats && stats.totalModelSteps > 0 && (b.totalOutputTokens > 0 || b.toolCallsCount > 0)) {
+          const tail = Array.isArray(b.topTools) && b.topTools.length > 0
+            ? ' (' + b.topTools.map((x) => `${x.name}×${x.count}`).join(', ') + ')'
+            : '';
+          footer.textContent = s.footer(fmtK(b.totalOutputTokens), b.toolCallsCount, tail);
+          footer.classList.remove('hidden');
+        } else {
+          footer.classList.add('hidden');
+        }
+      }
+
+      function renderStatsTab(stats, periodStats, s) {
+        if (!stats || !stats.exists || stats.totalModelSteps === 0) {
+          $('chat-stats-empty').textContent = s.noSteps;
+          $('chat-stats-empty').classList.remove('hidden');
+          $('chat-stats-body').classList.add('hidden');
+        } else {
+          $('chat-stats-empty').classList.add('hidden');
+          $('chat-stats-body').classList.remove('hidden');
+          const ss = stats.sessionStats || {};
+          const b = stats.breakdown || {};
+          $('st-fresh').textContent = fmtCompact(ss.totalInputTokens || 0);
+          $('st-cache').textContent = fmtCompact(ss.totalCacheReadTokens || 0);
+          $('st-out').textContent = fmtCompact(ss.totalOutputTokens || 0);
+          $('st-avgcache').textContent = `${ss.avgCacheHitPercent || 0}%`;
+          $('st-dur').textContent = fmtDuration(ss.durationSeconds || 0);
+          $('st-mediaerr').textContent = `${ss.mediaCount || 0} / ${ss.errorCount || 0}`;
+
+          if ((b.toolCallsCount || 0) > 0) {
+            const topNames = Array.isArray(b.topTools)
+              ? b.topTools.map((x) => `${x.name}×${x.count}`).join(', ')
+              : '';
+            $('st-tools').textContent = topNames ? `${b.toolCallsCount} (${topNames})` : String(b.toolCallsCount);
+            $('st-tools-row').classList.remove('hidden');
+          } else {
+            $('st-tools-row').classList.add('hidden');
+          }
+
+          const models = Array.isArray(ss.modelUsage) ? ss.modelUsage : [];
+          $('st-models-list').innerHTML = models
+            .slice(0, 5)
+            .map((m) => `<div class="step-row"><span class="mono">${m.name}</span><span class="step-delta">${s.stepsShort(m.steps)}</span></div>`)
+            .join('');
+        }
+
+        if (!periodStats || periodStats.modelSteps === 0) {
+          $('period-stats-empty').textContent = s.noPeriodActivity;
+          $('period-stats-empty').classList.remove('hidden');
+          $('period-stats-body').classList.add('hidden');
+        } else {
+          $('period-stats-empty').classList.add('hidden');
+          $('period-stats-body').classList.remove('hidden');
+          $('p-chats').textContent = String(periodStats.activeChats || 0);
+          $('p-calls').textContent = String(periodStats.modelSteps || 0);
+          $('p-inout').textContent = `${fmtCompact(periodStats.totalInputTokens || 0)} + ${fmtCompact(periodStats.totalOutputTokens || 0)}`;
+          $('p-cache').textContent = `${fmtCompact(periodStats.totalCacheReadTokens || 0)} (${periodStats.avgCacheHitPercent || 0}%)`;
+
+          const pModels = Array.isArray(periodStats.modelUsage) ? periodStats.modelUsage : [];
+          $('p-models-list').innerHTML = pModels
+            .slice(0, 5)
+            .map((m) => `<div class="step-row"><span class="mono">${m.name}</span><span class="step-delta">${s.stepsShort(m.steps)}</span></div>`)
+            .join('');
+        }
+      }
+
       function render(data) {
+        lastData = data;
+        if (!hasManualLang && (data.language === 'ru' || data.language === 'en')) {
+          lang = data.language;
+        }
+        applyStaticLabels();
+
         const hostConv = window.sidecar?.conversationId || '';
         if (followActive && hostConv && hostConv !== selectedConvId) {
           selectedConvId = hostConv;
         }
 
+        const s = t();
         const select = $('conv-select');
         const recent = Array.isArray(data.recent) ? data.recent : [];
         const currentId = data.activeConversationId || '';
@@ -509,14 +1202,14 @@
         if (recent.length === 0 && !currentId) {
           const opt = document.createElement('option');
           opt.value = '';
-          opt.textContent = 'Нет активных чатов';
+          opt.textContent = s.noChats;
           select.appendChild(opt);
         } else {
           const seen = new Set();
           if (currentId && !recent.some((r) => r.conversationId === currentId)) {
             const opt = document.createElement('option');
             opt.value = currentId;
-            opt.textContent = `Текущий чат (${currentId.slice(0, 8)})`;
+            opt.textContent = `${s.currentChat} (${currentId.slice(0, 8)})`;
             select.appendChild(opt);
             seen.add(currentId);
           }
@@ -533,9 +1226,9 @@
         }
 
         const stats = data.current;
-        if (!stats || !stats.exists) {
+        if (!stats || !stats.exists || stats.totalModelSteps === 0) {
           $('token-count').textContent = '0';
-          $('token-limit-label').textContent = `/ ${fmtK(limitTokens)} (новый чат)`;
+          $('token-limit-label').textContent = `/ ${fmtCompact(limitTokens)} (${s.newChat})`;
           $('pct-pill').textContent = '0%';
           $('pct-pill').className = 'pct-pill zone-green';
           $('bar-fill').style.width = '0%';
@@ -544,8 +1237,11 @@
           $('m-delta').textContent = '—';
           $('m-cache').textContent = '—';
           $('m-peak').textContent = '—';
-          $('alert-box').style.display = 'none';
-          $('steps-list').innerHTML = '<div class="empty">Пока нет шагов модели</div>';
+          $('alert-box').classList.add('hidden');
+          $('steps-cols').style.display = 'none';
+          $('steps-list').innerHTML = `<div class="empty">${s.noSteps}</div>`;
+          renderBreakdown(null, s);
+          renderStatsTab(stats, data.periodStats, s);
           return;
         }
 
@@ -555,7 +1251,7 @@
         const zone = pct >= 85 ? 'red' : pct >= 70 ? 'amber' : 'green';
 
         $('token-count').textContent = fmtNum(used);
-        $('token-limit-label').textContent = `/ ${fmtK(limitTokens)} токенов`;
+        $('token-limit-label').textContent = `/ ${fmtCompact(limitTokens)} ${s.tokens}`;
         $('pct-pill').textContent = `${pct}%`;
         $('pct-pill').className = `pct-pill zone-${zone}`;
         $('bar-fill').style.width = `${barPct.toFixed(1)}%`;
@@ -564,46 +1260,70 @@
         const alertBox = $('alert-box');
         if (stats.compactionEvents > 0 || zone !== 'green') {
           const msgs = [];
-          if (zone === 'red') {
-            msgs.push('Близко к авто-сжатию: рекомендуется сохранить HANDOFF.md и открыть новый чат.');
-          } else if (zone === 'amber') {
-            msgs.push('Контекст заполняется: лучше завершить текущую подзадачу и не смешивать темы.');
-          }
-          if (stats.compactionEvents > 0) {
-            msgs.push(`В этом чате уже было авто-сжатие (${stats.compactionEvents}×).`);
-          }
+          if (zone === 'red') msgs.push(s.alertRed);
+          else if (zone === 'amber') msgs.push(s.alertAmber);
+          if (stats.compactionEvents > 0) msgs.push(s.alertCompaction(stats.compactionEvents));
           alertBox.textContent = msgs.join(' ');
           alertBox.className = `alert ${zone === 'red' ? 'alert-red' : 'alert-amber'}`;
-          alertBox.style.display = 'block';
         } else {
-          alertBox.style.display = 'none';
+          alertBox.classList.add('hidden');
         }
 
-        $('m-model').textContent = stats.model || '—';
-        $('m-model').title = stats.model || '';
-        const dSign = stats.lastDelta >= 0 ? '+' : '';
-        $('m-delta').textContent = stats.totalModelSteps > 0 ? `${dSign}${fmtNum(stats.lastDelta)}` : '—';
-        $('m-cache').textContent = `${fmtK(stats.lastCacheReadTokens)} (${stats.cacheHitPercent}%)`;
-        $('m-peak').textContent = `${stats.totalModelSteps} / ${fmtK(stats.peakTokens)}`;
+        renderBreakdown(stats, s);
+
+        const ss = stats.sessionStats || {};
+        const primary = ss.primaryModel || stats.model || '';
+        const modelDisplay = primary
+          ? (ss.otherModelsCount > 0 ? `${primary} (+${ss.otherModelsCount})` : primary)
+          : '—';
+        $('m-model').textContent = modelDisplay;
+        $('m-model').title = modelDisplay;
+
+        const latestMsg = Array.isArray(stats.recentMessages) && stats.recentMessages.length > 0
+          ? stats.recentMessages[0]
+          : null;
+        const deltaVal = historyMode === 'messages' && latestMsg ? latestMsg.delta : stats.lastDelta;
+        const dSign = deltaVal >= 0 ? '+' : '';
+        $('m-delta').textContent = `${dSign}${fmtNum(deltaVal)}`;
+
+        if (historyMode === 'messages' && latestMsg) {
+          $('m-cache').textContent = `${fmtK(latestMsg.cacheReadTokens || 0)} (${latestMsg.cacheHitPercent || 0}%)`;
+        } else {
+          $('m-cache').textContent = `${fmtK(stats.lastCacheReadTokens)} (${stats.cacheHitPercent}%)`;
+        }
+
+        const countNum = historyMode === 'messages' ? (ss.userMessageCount || 0) : stats.totalModelSteps;
+        $('m-peak').textContent = `${countNum} / ${fmtK(stats.peakTokens)}`;
+
+        const rows = historyMode === 'messages'
+          ? (Array.isArray(stats.recentMessages) ? stats.recentMessages : [])
+          : (Array.isArray(stats.recentSteps) ? stats.recentSteps : []);
 
         const stepsEl = $('steps-list');
-        if (!stats.recentSteps || stats.recentSteps.length === 0) {
-          stepsEl.innerHTML = '<div class="empty">Пока нет шагов модели</div>';
+        if (rows.length === 0) {
+          $('steps-cols').style.display = 'none';
+          stepsEl.innerHTML = `<div class="empty">${s.noSteps}</div>`;
         } else {
-          stepsEl.innerHTML = stats.recentSteps
+          $('steps-cols').style.display = 'flex';
+          stepsEl.innerHTML = rows
             .slice(0, 6)
-            .map((s) => {
-              const sign = s.delta >= 0 ? '+' : '';
+            .map((item) => {
+              const idNum = historyMode === 'messages' ? item.turnIndex : item.stepIndex;
+              const compacted = historyMode === 'messages' ? item.hadCompaction : item.isCompaction;
+              const sign = item.delta >= 0 ? '+' : '';
+              const badge = compacted ? `<span class="compact-pill">${s.compactedPill}</span>` : '';
               return (
-                `<div class="step-row">` +
-                `<span class="step-id">#${s.stepIndex}</span>` +
-                `<span>${fmtNum(s.contextTokens)}</span>` +
-                `<span class="step-delta">${sign}${fmtNum(s.delta)}</span>` +
+                `<div class="step-row${compacted ? ' compacted' : ''}">` +
+                `<span class="step-id">#${idNum}</span>` +
+                `<span class="step-mid"><span>${fmtNum(item.contextTokens)}</span>${badge}</span>` +
+                `<span class="step-delta">${sign}${fmtNum(item.delta)}</span>` +
                 `</div>`
               );
             })
             .join('');
         }
+
+        renderStatsTab(stats, data.periodStats, s);
 
         const now = new Date();
         $('live-time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -613,9 +1333,15 @@
         if (document.hidden) return;
         try {
           const targetConv = followActive ? (window.sidecar?.conversationId || selectedConvId) : selectedConvId;
-          const query = targetConv ? `?conversationId=${encodeURIComponent(targetConv)}` : '';
+          const q = new URLSearchParams();
+          if (targetConv) q.set('conversationId', targetConv);
+          if (activeTab === 'stats') {
+            q.set('includeStats', '1');
+            q.set('hours', String(periodHours));
+          }
+          const qs = q.toString();
           const fetcher = window.sidecar?.fetch ? window.sidecar.fetch.bind(window.sidecar) : fetch;
-          const res = await fetcher(`/api/context${query}`, { method: 'GET' });
+          const res = await fetcher(`/api/context${qs ? `?${qs}` : ''}`, { method: 'GET' });
           if (!res.ok) return;
           const data = await res.json();
           render(data);
