@@ -1,4 +1,7 @@
-# Chat Tokens & Context Monitor for Antigravity 2.0
+<div align="center">
+  <img src="assets/logo.svg" alt="Chat Tokens logo" width="84" height="84" />
+  <h1>Chat Tokens & Context Monitor for Antigravity 2.0</h1>
+</div>
 
 [![Version](https://img.shields.io/badge/version-1.1.0-orange)](https://github.com/vladsboev-web/chat_tokens/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -24,22 +27,23 @@ All-in-one, zero-dependency plugin for **Google Antigravity 2.0** combining:
 ## Features / Возможности
 
 - **Live Sidecar Panel (`Context Monitor`)**
-  - **Context & Stats tabs**: monitor live context window usage in the current chat alongside aggregated local usage stats for the current chat and across all chats (`24h / 7d`).
-  - **Selectable threshold presets** (`128k`, `160k`, `200k`, `256k`, `1M`) saved per user in `localStorage`.
-  - **Estimated Context Breakdown**: visual breakdown by category (*System & rules*, *Tools & files*, *Assistant & thinking*, *User messages*) plus total output and top tool call summary.
-  - **Messages / Steps toggle** in Recent activity with mode-aware metrics: *Primary model* (with `+N` other models indicator), *Last message / step delta*, *Cache hit ratio*, and *Messages / Steps vs. Peak*.
-  - **Compaction detection** — detects automatic context compaction via `CHECKPOINT` transcript events and drop heuristics, showing `⚡ compacted` badges in history and session alerts.
-  - **Automatic RU / EN localization** based on system locale, plus a manual **`RU / EN` toggle** in the panel header.
-  - Automatic light/dark theme sync with Antigravity 2.0.
+  - **Context & Stats tabs**: monitor live context window usage in the current chat alongside global `24h / 7d` analytics across all chats.
+  - **Orchestrator & Multi-Model Scope Switcher**: switch between `All | Orchestrator | Executor` (or `All | <Models>` in manual mode, or 2-level when both modes appear in the same chat).
+  - **Selectable threshold presets & custom limit**: `128k`, `160k`, `200k`, `256k`, `1M`, plus a **Custom** input (`300k`, `500000`, `1.5M`, etc.) saved in `localStorage`.
+  - **Expandable 1-column Context Breakdown**: visual breakdown across 6 categories (*System & rules* with subcategories, *Files in context* with touched files list, *Tools & commands* with call counts, *Model responses*, *Thinking*, *User messages*), hiding 0-token rows.
+  - **6-tile session summary & transition badges**: displays formatted model names with `Effort` pill (`Low / Medium / High / XHigh`), *Last message / step delta*, *Cache (last / avg)*, *Messages / Steps vs. Peak*, *Input + Output*, and *Duration*, plus `⚡ compacted`, `⇄ model`, and `⇄ effort` history badges.
+  - **Global `24h / 7d` Stats tab**: 6-cell summary grid (*Chats / Messages*, *Model calls & compactions*, *Fresh input*, *From cache*, *Output*, *Active time*) and expandable *Models*, *Files*, *Tools*, and clickable *Active chats* lists.
+  - **In-plugin Controls**: `Auto / Manual ↺ Auto` active-chat sync badge, `Auto / Light / Dark` theme cycle button (synced with Antigravity), and `RU / EN` language toggle.
   - **One-click `HANDOFF.md` prompt copy** — wrap up long sessions cleanly before auto-compaction erases fine-grained constraints.
-  - Switch between the 10 most recent conversations right from the panel.
+  - Switch between the 10 most recent conversations (with titles read from `conversation_summaries.db` and incremental tail-reading of `transcript.jsonl`).
 - **Instant 0-Token Slash Command (`/ctx`, `/чат`, `/chat`, `/tokens`)**
   - Both `/ctx` and `/чат` are registered in the `/` autocomplete menu (`skills/ctx/SKILL.md` and `skills/чат/SKILL.md`).
   - Intercepted locally by a `PreInvocation` hook (`./scripts/chat_tokens_hook.py`) before any model request is sent (**0 LLM tokens, 0 quota spent**).
-  - Outputs via `errorMessage.userMessage` so the token count (including compaction count when present) is guaranteed visible in both `Default` and `Verbose` conversation step modes without ever being sent to the model.
+  - Automatically syncs threshold, language (`RU / EN`), and view mode (`Messages / Steps`) with the Sidecar panel via `~/.gemini/config/chat_tokens_prefs.json`, and supports an optional threshold override (e.g. `/чат 256k`, `/ctx 1M`).
+  - Renders directly in chat via `systemMessage` + `metadata.user_markdown` (`systemMessage: ""`) — clean inline Markdown with a compact summary line and a collapsible `<details>` session breakdown card (including a `[Context Monitor](sidecar://chat_tokens/context_monitor/)` shortcut).
 - **100% Local & Zero Dependencies**
   - Uses only Node.js built-ins + Antigravity's built-in `sidecar_sdk`, and Python 3 standard library.
-  - Read-only access to `~/.gemini/antigravity/brain/<conversationId>/.system_generated/logs/` (`transcript_full.jsonl` / `transcript.jsonl`).
+  - Read-only access to `~/.gemini/antigravity/brain/<conversationId>/.system_generated/logs/` (`transcript.jsonl` / `transcript_full.jsonl`), `~/.gemini/antigravity/conversation_summaries.db`, and Antigravity theme settings.
 
 ---
 
@@ -77,7 +81,7 @@ Then **restart Antigravity 2.0**.
 Open the right-hand Auxiliary Pane and switch to the **Context** tab (or ask the agent to surface the `[Context Monitor](sidecar://chat_tokens/context_monitor/)` pill).
 
 ### 2. Slash Commands in Chat
-Send any of the following as a standalone message:
+Send any of the following as a standalone message (optionally with a custom threshold like `/чат 256k` or `/ctx 1M`):
 - `/ctx` (available in the `/` autocomplete menu via `skills/ctx/SKILL.md`)
 - `/чат`
 - `/chat`
@@ -85,10 +89,9 @@ Send any of the following as a standalone message:
 
 Example output:
 ```text
-Контекст: 128 991 токенов (+2 850) · кэш: 126 141 · шаг: 109
+🟢 Контекст: 142 300 / 200k (71%) · +3 420 · кэш 96% · 4 Neon High · сообщ. 6
 ```
-
-> **Note on display:** Because Antigravity 2.x hides empty `systemMessage` rows in chat, the hook injects the line via `errorMessage.userMessage` — the UI shows an `Error` prefix for this step type, while guaranteeing visibility in both `Default` and `Verbose` modes with 0 tokens sent to the model.
+Clicking **Подробнее о сессии / Session details** expands a full Markdown summary with model/mode info, cache ratio, input/output totals, duration, estimated context breakdown, top files/tools, and a button to open the Sidecar panel.
 
 ---
 
@@ -98,6 +101,8 @@ Example output:
 chat_tokens/
 ├── plugin.json                        # Plugin manifest
 ├── hooks.json                         # PreInvocation hook registration
+├── assets/
+│   └── logo.svg                       # Plugin logo
 ├── scripts/
 │   └── chat_tokens_hook.py            # 0-token local hook (/ctx, /чат, /chat, /tokens)
 ├── skills/

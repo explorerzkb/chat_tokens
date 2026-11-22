@@ -9,20 +9,24 @@
     :root {
       --bg: var(--background, #f7f7f8);
       --surface: var(--card, #ffffff);
-      --surface-muted: var(--muted, #f0f1f4);
+      --surface-muted: var(--muted, #eff1f5);
       --fg: var(--foreground, #171717);
       --fg-muted: var(--muted-foreground, #6b7280);
       --border-col: var(--border, rgba(128, 128, 128, 0.22));
       --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.14);
       --green: #16a34a;
-      --green-bg: rgba(22, 163, 74, 0.14);
+      --green-bg: rgba(22, 163, 74, 0.15);
       --amber: #d97706;
       --amber-bg: rgba(217, 119, 6, 0.14);
       --red: #dc2626;
       --red-bg: rgba(220, 38, 38, 0.14);
       --purple: #8f6bf5;
+      --purple-bg: rgba(143, 107, 245, 0.14);
       --blue: #338cf5;
+      --cyan: #1ab8d6;
       --teal: #24b88f;
+      --mint: #33c7b3;
       --orange: #f28f2e;
       --radius: 10px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -36,6 +40,30 @@
       --fg: var(--foreground, #eceef2);
       --fg-muted: var(--muted-foreground, #9ca3af);
       --border-col: var(--border, rgba(255, 255, 255, 0.12));
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #f87171;
+    }
+
+    html[data-theme-mode="light"] {
+      --bg: #f7f7f8;
+      --surface: #ffffff;
+      --surface-muted: #eff1f5;
+      --fg: #171717;
+      --fg-muted: #6b7280;
+      --border-col: rgba(0, 0, 0, 0.12);
+      --green: #16a34a;
+      --amber: #d97706;
+      --red: #dc2626;
+    }
+
+    html[data-theme-mode="dark"] {
+      --bg: #141416;
+      --surface: #1d1e22;
+      --surface-muted: #26282e;
+      --fg: #eceef2;
+      --fg-muted: #9ca3af;
+      --border-col: rgba(255, 255, 255, 0.12);
       --green: #22c55e;
       --amber: #f59e0b;
       --red: #f87171;
@@ -58,21 +86,28 @@
     .stack {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 9px;
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
     }
 
     .title-wrap {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       min-width: 0;
+    }
+
+    .brand-logo {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: block;
     }
 
     .title {
@@ -80,42 +115,80 @@
       font-size: 14px;
       font-weight: 600;
       letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mode-pill {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .mode-pill.auto {
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .mode-pill.manual {
+      border: none;
+      font-family: inherit;
+      color: var(--blue);
+      background: var(--accent-soft);
+      cursor: pointer;
+    }
+
+    .mode-pill.manual:hover {
+      filter: brightness(1.08);
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-shrink: 0;
     }
 
-    .lang-btn {
+    .hdr-btn {
       border: 1px solid var(--border-col);
       background: var(--surface-muted);
       color: var(--fg);
       font-size: 11px;
       font-weight: 600;
-      font-family: var(--mono);
+      font-family: inherit;
       padding: 2px 7px;
       border-radius: 999px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
     }
 
-    .lang-btn:hover {
+    .hdr-btn.mono-btn {
+      font-family: var(--mono);
+    }
+
+    .hdr-btn:hover {
       border-color: var(--accent);
     }
 
     .live-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      font-size: 11px;
+      gap: 4px;
+      font-size: 10.5px;
       color: var(--fg-muted);
       padding: 2px 7px;
       border-radius: 999px;
       background: var(--surface-muted);
       border: 1px solid var(--border-col);
       flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
     }
 
     .live-dot {
@@ -160,9 +233,16 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
+    .field-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      margin-bottom: 4px;
+    }
+
     .select {
       width: 100%;
-      padding: 6px 8px;
+      padding: 7px 8px;
       border-radius: 8px;
       border: 1px solid var(--border-col);
       background: var(--surface);
@@ -172,11 +252,58 @@
       outline: none;
     }
 
+    .scope-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .scope-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--fg-muted);
+    }
+
+    .scope-bar {
+      display: flex;
+      gap: 3px;
+      padding: 3px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border-col);
+      border-radius: 7px;
+      overflow-x: auto;
+    }
+
+    .scope-btn {
+      border: none;
+      background: transparent;
+      color: var(--fg-muted);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: inherit;
+      padding: 4px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex: 1 1 0;
+    }
+
+    .scope-btn.compact {
+      flex: 0 0 auto;
+    }
+
+    .scope-btn.active {
+      background: var(--surface);
+      color: var(--fg);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
     .card {
       background: var(--surface);
       border: 1px solid var(--border-col);
       border-radius: var(--radius);
-      padding: 12px;
+      padding: 11px;
     }
 
     .hero-top {
@@ -188,9 +315,10 @@
     }
 
     .token-count {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       letter-spacing: -0.02em;
+      font-family: var(--mono);
       font-variant-numeric: tabular-nums;
     }
 
@@ -201,7 +329,7 @@
 
     .pct-pill {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       padding: 2px 8px;
       border-radius: 999px;
       font-variant-numeric: tabular-nums;
@@ -248,6 +376,7 @@
       display: flex;
       gap: 4px;
       flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .preset-btn {
@@ -261,11 +390,58 @@
       cursor: pointer;
     }
 
+    .preset-btn.custom-btn {
+      font-family: inherit;
+    }
+
     .preset-btn.active {
       background: var(--accent);
       border-color: var(--accent);
       color: #ffffff;
       font-weight: 600;
+    }
+
+    .custom-threshold-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 7px;
+    }
+
+    .custom-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-col);
+      background: var(--surface-muted);
+      color: var(--fg);
+      font-size: 11.5px;
+      font-family: var(--mono);
+      outline: none;
+    }
+
+    .custom-input:focus {
+      border-color: var(--accent);
+    }
+
+    .custom-apply-btn {
+      border: none;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .custom-error {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--red);
     }
 
     .seg {
@@ -282,8 +458,8 @@
       background: transparent;
       color: var(--fg-muted);
       font-size: 11px;
-      font-family: var(--mono);
-      padding: 2px 7px;
+      font-family: inherit;
+      padding: 2px 8px;
       border-radius: 5px;
       cursor: pointer;
     }
@@ -296,7 +472,7 @@
     }
 
     .alert {
-      margin-top: 10px;
+      margin-top: 8px;
       padding: 8px 10px;
       border-radius: 8px;
       font-size: 12px;
@@ -306,19 +482,28 @@
 
     .alert-amber {
       background: var(--amber-bg);
-      color: var(--amber);
-      border-color: rgba(217, 119, 6, 0.3);
+      color: var(--fg);
+      border-color: rgba(217, 119, 6, 0.35);
     }
 
     .alert-red {
       background: var(--red-bg);
-      color: var(--red);
-      border-color: rgba(220, 38, 38, 0.3);
+      color: var(--fg);
+      border-color: rgba(220, 38, 38, 0.35);
+    }
+
+    .banner-muted {
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--fg-muted);
+      background: var(--surface-muted);
+      border: 1px solid var(--border-col);
     }
 
     .breakdown-bar {
       display: flex;
-      height: 8px;
+      height: 9px;
       border-radius: 999px;
       background: var(--surface-muted);
       overflow: hidden;
@@ -331,84 +516,163 @@
       min-width: 2px;
     }
 
-    .legend-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5px 10px;
+    .bd-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    .legend-item {
+    .bd-row {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      min-width: 0;
+      gap: 6px;
+      width: 100%;
+      padding: 3px 4px;
+      border: none;
+      background: transparent;
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 11.5px;
+      border-radius: 6px;
+      text-align: left;
+    }
+
+    .bd-row.clickable {
+      cursor: pointer;
+    }
+
+    .bd-row.clickable:hover {
+      background: var(--surface-muted);
     }
 
     .legend-dot {
-      width: 7px;
-      height: 7px;
+      width: 7.5px;
+      height: 7.5px;
       border-radius: 50%;
       flex-shrink: 0;
     }
 
-    .legend-name {
-      color: var(--fg-muted);
+    .bd-title {
+      font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .legend-val {
-      margin-left: auto;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
+    .chev {
+      font-size: 10px;
+      color: var(--fg-muted);
       flex-shrink: 0;
     }
 
-    .tools-footer {
-      margin-top: 7px;
+    .bd-spacer {
+      flex: 1 1 auto;
+    }
+
+    .bd-tok {
       font-family: var(--mono);
-      font-size: 10.5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      width: 44px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .bd-pct {
+      font-family: var(--mono);
+      font-size: 11.5px;
       color: var(--fg-muted);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .sub-box {
+      margin: 2px 0 4px 12px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      background: var(--surface-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sub-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 1.5px 2px;
+    }
+
+    .sub-name {
+      color: var(--fg);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .sub-name.muted {
+      color: var(--fg-muted);
+    }
+
+    .sub-name.mono-name {
+      font-family: var(--mono);
+    }
+
+    .sub-count {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-weight: 600;
+      color: var(--fg-muted);
+      flex-shrink: 0;
     }
 
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 6px;
     }
 
     .metric {
       background: var(--surface);
       border: 1px solid var(--border-col);
-      border-radius: var(--radius);
-      padding: 9px 10px;
+      border-radius: 8px;
+      padding: 7px 9px;
       min-width: 0;
     }
 
-    .metric.soft {
-      background: var(--surface-muted);
-      border-color: transparent;
-      padding: 7px 9px;
+    .metric-top {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
     }
 
     .metric-label {
       font-size: 11px;
       color: var(--fg-muted);
-      margin-bottom: 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .metric-val {
-      font-size: 13px;
+    .effort-pill {
+      margin-left: auto;
+      font-size: 9.5px;
       font-weight: 600;
+      color: var(--blue);
+      background: var(--accent-soft);
+      padding: 1px 5px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .metric-val {
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: var(--mono);
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
       overflow: hidden;
@@ -417,31 +681,28 @@
 
     .mono {
       font-family: var(--mono);
-      font-size: 12px;
     }
 
     .btn-primary {
       width: 100%;
-      padding: 9px 12px;
+      padding: 8px 12px;
       border-radius: 8px;
-      border: 1px solid var(--border-col);
-      background: var(--surface);
-      color: var(--fg);
-      font-size: 12px;
+      border: none;
+      background: #3373eb;
+      color: #ffffff;
+      font-size: 12.5px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: background-color 0.15s ease, border-color 0.15s ease;
+      transition: filter 0.15s ease, background-color 0.15s ease;
     }
 
     .btn-primary:hover {
-      background: var(--surface-muted);
+      filter: brightness(1.06);
     }
 
     .btn-primary.copied {
-      color: var(--green);
-      border-color: var(--green);
-      background: var(--green-bg);
+      background: var(--green);
     }
 
     .section-head {
@@ -449,14 +710,12 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .section-title {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
       color: var(--fg-muted);
       margin: 0;
     }
@@ -471,89 +730,189 @@
       align-items: center;
       justify-content: space-between;
       font-size: 10px;
+      font-weight: 500;
       color: var(--fg-muted);
-      padding: 0 6px 4px 6px;
+      padding: 2px 4px 4px 4px;
     }
 
     .steps {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .step-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       font-size: 12px;
       font-variant-numeric: tabular-nums;
-      padding: 4px 6px;
-      border-radius: 6px;
-      background: var(--surface-muted);
+      padding: 3px 4px;
+      border-radius: 5px;
     }
 
     .step-row.compacted {
-      background: var(--amber-bg);
+      background: rgba(217, 119, 6, 0.10);
     }
 
-    .step-mid {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .step-row.model-switched {
+      background: rgba(51, 140, 245, 0.10);
     }
 
-    .compact-pill {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--amber);
-      background: rgba(217, 119, 6, 0.16);
-      padding: 1px 5px;
-      border-radius: 4px;
+    .step-row.effort-switched {
+      background: var(--purple-bg);
     }
 
     .step-id {
       color: var(--fg-muted);
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: 11.5px;
+      width: 42px;
+      flex-shrink: 0;
     }
 
-    .step-delta {
+    .step-ctx {
       font-family: var(--mono);
-      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .ev-pill {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .ev-pill.compact { color: var(--amber); background: var(--amber-bg); }
+    .ev-pill.model { color: var(--blue); background: var(--accent-soft); }
+    .ev-pill.effort { color: var(--purple); background: var(--purple-bg); }
+
+    .step-delta {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 11.5px;
       color: var(--fg-muted);
     }
 
-    .meta-line {
+    .step-delta.neg {
+      color: var(--amber);
+    }
+
+    .period-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-top: 8px;
-      font-size: 11px;
+    }
+
+    .period-label {
+      font-size: 11.5px;
+      font-weight: 500;
       color: var(--fg-muted);
     }
 
-    .meta-val {
-      font-family: var(--mono);
+    .period-sec-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      border: none;
+      background: transparent;
       color: var(--fg);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .period-sec-btn:hover {
+      background: var(--surface-muted);
+    }
+
+    .period-sec-trailing {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--fg-muted);
+      flex-shrink: 0;
+    }
+
+    .period-list {
+      margin: 2px 0 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .model-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: var(--surface-muted);
+      font-size: 11.5px;
+    }
+
+    .model-name {
+      font-family: var(--mono);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-width: 0;
     }
 
-    .subhead {
-      margin: 10px 0 6px 0;
-      padding-top: 8px;
-      border-top: 1px solid var(--border-col);
-      font-size: 11px;
+    .model-meta {
+      margin-left: auto;
+      font-family: var(--mono);
       font-weight: 600;
       color: var(--fg-muted);
+      flex-shrink: 0;
+    }
+
+    .chat-jump-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      border: none;
+      background: var(--surface-muted);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .chat-jump-btn:hover {
+      filter: brightness(0.96);
+    }
+
+    .chat-jump-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .chat-jump-peak {
+      font-family: var(--mono);
+      font-weight: 600;
+      color: var(--fg-muted);
+      flex-shrink: 0;
     }
 
     .empty {
       text-align: center;
-      padding: 16px 10px;
+      padding: 12px 8px;
       color: var(--fg-muted);
       font-size: 12px;
     }
@@ -567,11 +926,30 @@
   <div class="stack">
     <div class="header">
       <div class="title-wrap">
-        <h1 class="title" id="ui-title">Контекст чата</h1>
+        <svg class="brand-logo" viewBox="0 0 128 128" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="hdr-ring-grad" x1="18%" y1="12%" x2="88%" y2="78%">
+              <stop offset="0%" stop-color="#10b998"/>
+              <stop offset="50%" stop-color="#129ce0"/>
+              <stop offset="100%" stop-color="#2574e8"/>
+            </linearGradient>
+            <linearGradient id="hdr-chevron-grad" x1="25%" y1="20%" x2="80%" y2="85%">
+              <stop offset="0%" stop-color="#0fb89b"/>
+              <stop offset="100%" stop-color="#1f82e6"/>
+            </linearGradient>
+          </defs>
+          <circle cx="64" cy="64" r="43" stroke="rgba(148, 163, 184, 0.30)" stroke-width="13"/>
+          <path d="M 64 21 A 43 43 0 1 1 22.47 75.13" stroke="url(#hdr-ring-grad)" stroke-width="13" stroke-linecap="round"/>
+          <path d="M 47.5 79 L 64 46.5 L 80.5 79" stroke="url(#hdr-chevron-grad)" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1 class="title" id="ui-title">Context Monitor</h1>
+        <span class="mode-pill auto" id="mode-badge">Авто</span>
+        <button type="button" class="mode-pill manual hidden" id="mode-reset-btn">Ручной ↺ Авто</button>
       </div>
       <div class="header-right">
-        <button type="button" class="lang-btn" id="lang-btn" title="RU / EN">RU</button>
-        <span class="live-badge" id="live-badge" title="Автообновление каждые 2 секунды">
+        <button type="button" class="hdr-btn" id="theme-btn" title="Тема">◐</button>
+        <button type="button" class="hdr-btn mono-btn" id="lang-btn" title="RU / EN">RU</button>
+        <span class="live-badge" id="live-badge">
           <span class="live-dot"></span>
           <span id="live-time">Live</span>
         </span>
@@ -583,10 +961,15 @@
       <button type="button" class="tab-btn" id="tab-stats" data-tab="stats">Статистика</button>
     </div>
 
-    <select id="conv-select" class="select" aria-label="Выбор чата"></select>
-
     <!-- TAB 1: CONTEXT -->
     <div id="view-context" class="stack">
+      <div>
+        <div class="field-label" id="lbl-recent-chats">Последние чаты</div>
+        <select id="conv-select" class="select" aria-label="Выбор чата"></select>
+      </div>
+
+      <div id="scope-box" class="scope-stack hidden"></div>
+
       <div class="card">
         <div class="hero-top">
           <div>
@@ -606,9 +989,16 @@
             <button type="button" class="preset-btn" data-limit="200000">200k</button>
             <button type="button" class="preset-btn" data-limit="256000">256k</button>
             <button type="button" class="preset-btn" data-limit="1000000">1M</button>
+            <button type="button" class="preset-btn custom-btn" id="custom-threshold-btn">Свой</button>
           </div>
         </div>
+        <div class="custom-threshold-row hidden" id="custom-threshold-row">
+          <input type="text" class="custom-input" id="custom-threshold-input" placeholder="Напр. 300k, 500000 или 1.5M">
+          <button type="button" class="custom-apply-btn" id="custom-threshold-apply">Применить</button>
+        </div>
+        <div class="custom-error hidden" id="custom-threshold-error"></div>
         <div class="alert hidden" id="alert-box"></div>
+        <div class="banner-muted hidden" id="no-data-banner" style="margin-top:8px"></div>
       </div>
 
       <div class="card">
@@ -617,26 +1007,46 @@
           <span class="sub-tag" id="lbl-estimate">оценка</span>
         </div>
         <div class="breakdown-bar" id="breakdown-bar"></div>
-        <div class="legend-grid" id="breakdown-legend"></div>
-        <div class="tools-footer hidden" id="tools-footer"></div>
+        <div class="bd-list" id="breakdown-list"></div>
       </div>
 
       <div class="grid">
         <div class="metric">
-          <div class="metric-label" id="lbl-model">Основная модель</div>
-          <div class="metric-val mono" id="m-model">—</div>
+          <div class="metric-top">
+            <span class="metric-label" id="lbl-model">Основная модель</span>
+            <span class="effort-pill hidden" id="m-effort"></span>
+          </div>
+          <div class="metric-val" id="m-model">—</div>
         </div>
         <div class="metric">
-          <div class="metric-label" id="lbl-delta">Последнее сообщение</div>
+          <div class="metric-top">
+            <span class="metric-label" id="lbl-delta">Последнее сообщение</span>
+          </div>
           <div class="metric-val" id="m-delta">—</div>
         </div>
         <div class="metric">
-          <div class="metric-label" id="lbl-cache">Кэш (посл. сообщ.)</div>
+          <div class="metric-top">
+            <span class="metric-label" id="lbl-cache">Кэш (посл. / ср.)</span>
+          </div>
           <div class="metric-val" id="m-cache">—</div>
         </div>
         <div class="metric">
-          <div class="metric-label" id="lbl-peak">Сообщений / Пик</div>
+          <div class="metric-top">
+            <span class="metric-label" id="lbl-peak">Сообщений / Пик</span>
+          </div>
           <div class="metric-val" id="m-peak">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-top">
+            <span class="metric-label" id="lbl-io">Вход + Вывод</span>
+          </div>
+          <div class="metric-val" id="m-io">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-top">
+            <span class="metric-label" id="lbl-dur">Длительность</span>
+          </div>
+          <div class="metric-val" id="m-dur">—</div>
         </div>
       </div>
 
@@ -655,7 +1065,7 @@
         <div class="steps-cols" id="steps-cols" style="display:none">
           <span id="col-idx">Сообщ.</span>
           <span id="col-ctx">Контекст</span>
-          <span id="col-delta">Прирост</span>
+          <span id="col-delta" style="margin-left:auto">Прирост</span>
         </div>
         <div class="steps" id="steps-list">
           <div class="empty" id="lbl-waiting">Ожидание данных…</div>
@@ -665,76 +1075,49 @@
 
     <!-- TAB 2: STATS -->
     <div id="view-stats" class="stack hidden">
-      <div class="card">
-        <div class="section-head">
-          <h2 class="section-title" id="lbl-stats-chat">Текущий чат</h2>
-        </div>
-        <div id="chat-stats-empty" class="empty hidden"></div>
-        <div id="chat-stats-body">
-          <div class="grid">
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-st-fresh">Свежий вход</div>
-              <div class="metric-val" id="st-fresh">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-st-cache">Из кэша</div>
-              <div class="metric-val" id="st-cache">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-st-out">Вывод (ответы)</div>
-              <div class="metric-val" id="st-out">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-st-avgcache">Средний кэш</div>
-              <div class="metric-val" id="st-avgcache">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-st-dur">Длительность</div>
-              <div class="metric-val" id="st-dur">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-st-mediaerr">Вложения / Ошибки</div>
-              <div class="metric-val" id="st-mediaerr">—</div>
-            </div>
-          </div>
-          <div class="meta-line hidden" id="st-tools-row">
-            <span id="lbl-st-tools">Инструменты</span>
-            <span class="meta-val" id="st-tools">—</span>
-          </div>
-          <div class="subhead" id="lbl-st-models">Модели в чате</div>
-          <div class="steps" id="st-models-list"></div>
+      <div class="period-head">
+        <span class="period-label" id="lbl-period-header">Все чаты за период</span>
+        <div class="seg" role="group">
+          <button type="button" class="seg-btn" id="period-24" data-hours="24">24ч</button>
+          <button type="button" class="seg-btn" id="period-168" data-hours="168">7дн</button>
         </div>
       </div>
 
-      <div class="card">
-        <div class="section-head">
-          <h2 class="section-title" id="lbl-stats-all">Все чаты</h2>
-          <div class="seg" role="group">
-            <button type="button" class="seg-btn" id="period-24" data-hours="24">24ч</button>
-            <button type="button" class="seg-btn" id="period-168" data-hours="168">7дн</button>
+      <div id="period-stats-empty" class="card empty hidden"></div>
+
+      <div id="period-stats-body" class="stack">
+        <div class="grid">
+          <div class="metric">
+            <div class="metric-top"><span class="metric-label" id="lbl-p-chats">Чатов / Сообщений</span></div>
+            <div class="metric-val" id="p-chats">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-top"><span class="metric-label" id="lbl-p-calls">Запросов к моделям</span></div>
+            <div class="metric-val" id="p-calls">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-top"><span class="metric-label" id="lbl-p-fresh">Свежий вход</span></div>
+            <div class="metric-val" id="p-fresh">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-top"><span class="metric-label" id="lbl-p-cache">Из кэша</span></div>
+            <div class="metric-val" id="p-cache">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-top"><span class="metric-label" id="lbl-p-out">Вывод (ответы)</span></div>
+            <div class="metric-val" id="p-out">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-top"><span class="metric-label" id="lbl-p-time">Активное время</span></div>
+            <div class="metric-val" id="p-time">—</div>
           </div>
         </div>
-        <div id="period-stats-empty" class="empty hidden"></div>
-        <div id="period-stats-body">
-          <div class="grid">
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-p-chats">Активных чатов</div>
-              <div class="metric-val" id="p-chats">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-p-calls">Запросов к моделям</div>
-              <div class="metric-val" id="p-calls">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-p-inout">Вход + вывод</div>
-              <div class="metric-val" id="p-inout">—</div>
-            </div>
-            <div class="metric soft">
-              <div class="metric-label" id="lbl-p-cache">Из кэша</div>
-              <div class="metric-val" id="p-cache">—</div>
-            </div>
+
+        <div class="card">
+          <div class="section-head">
+            <h2 class="section-title" id="lbl-period-activity">Активность за период</h2>
           </div>
-          <div class="steps" id="p-models-list" style="margin-top:8px"></div>
+          <div id="period-activity-sections"></div>
         </div>
       </div>
     </div>
@@ -743,38 +1126,65 @@
   <script>
     (() => {
       const POLL_MS = 2000;
+      const THRESHOLD_PRESETS = [128000, 160000, 200000, 256000, 1000000];
       const HISTORY_MODE_KEY = 'agy_context_history_mode';
       const PERIOD_KEY = 'agy_context_stats_period';
       const THRESHOLD_KEY = 'agy_context_threshold';
       const LANG_KEY = 'agy_context_lang';
+      const THEME_KEY = 'agy_context_theme';
 
       const I18N = {
         ru: {
-          title: 'Контекст чата',
+          title: 'Context Monitor',
+          autoBadge: 'Авто',
+          manualToAuto: 'Ручной ↺ Авто',
+          autoActiveOption: 'Авто (активный чат)',
+          autoActiveTitle: (t) => `Авто: ${t}`,
+          recentChatsCount: (n) => (n > 0 ? `Последние ${n} чатов` : 'Последние чаты'),
           liveHint: 'Автообновление каждые 2 секунды',
+          themeLabels: { auto: 'Авто', light: 'Свет', dark: 'Тёмн' },
+          themeHints: { auto: 'Тема: Авто (Antigravity)', light: 'Тема: Светлая', dark: 'Тема: Тёмная' },
           thresholdLabel: 'Порог',
+          customBtn: 'Свой',
+          customBtnVal: (v) => `Свой: ${v}`,
+          customPlaceholder: 'Напр. 300k, 500000 или 1.5M',
+          customApply: 'Применить',
+          customError: 'Введи число, напр. 300k, 500000 или 1.5M',
           tabContext: 'Контекст',
           tabStats: 'Статистика',
           noChats: 'Нет активных чатов',
           currentChat: 'Текущий чат',
-          newChat: 'новый чат',
           tokens: 'токенов',
+          noTokenLogsBanner: 'Нет логов токенов для этого чата (новый или пустой чат).',
+          scopeAllChat: 'Весь чат',
+          scopeManual: 'Ручной режим',
+          scopeOrchestrator: 'Оркестратор',
+          scopeAll: 'Общее',
+          scopePlanner: 'Оркестр',
+          scopeExecutor: 'Исполнитель',
           breakdown: 'Структура контекста',
           estimate: 'оценка',
           segSystem: 'Система и правила',
-          segTools: 'Инструменты и файлы',
-          segAssistant: 'Ответы и мысли',
-          segUser: 'Сообщения',
-          footer: (outK, count, tail) => `Вывод: ${outK} · Инструментов: ${count}${tail}`,
+          subBasePrompt: 'Базовый промпт и правила',
+          subSystemMessages: 'Системные сообщения',
+          subHistory: 'Память прошлых чатов',
+          subCheckpoint: 'Сводка после сжатия',
+          segFiles: (n) => (n > 0 ? `Файлы в контексте (${n})` : 'Файлы в контексте'),
+          segTools: (n) => (n > 0 ? `Инструменты и команды (${n})` : 'Инструменты и команды'),
+          segAssistant: 'Ответы модели',
+          segThinking: 'Рассуждения (Thinking)',
+          segUser: (media) => (media > 0 ? `Сообщения (${media} влож.)` : 'Сообщения'),
           primaryModel: 'Основная модель',
+          singleModel: 'Модель',
           lastMsg: 'Последнее сообщение',
           lastStep: 'Последний шаг',
-          cacheMsg: 'Кэш (посл. сообщ.)',
-          cacheStep: 'Кэш (посл. шаг)',
+          cacheCombined: 'Кэш (посл. / ср.)',
           msgPeak: 'Сообщений / Пик',
           stepPeak: 'Шагов / Пик',
+          inputOutput: 'Вход + Вывод',
+          duration: 'Длительность',
           handoffBtn: 'Скопировать промпт для HANDOFF',
-          copiedBtn: 'Скопировано в буфер!',
+          copiedBtn: 'Скопировано в буфер ✓',
           copyFailed: 'Не удалось скопировать',
           recentTitle: 'Последние ходы',
           modeMessages: 'Сообщения',
@@ -786,25 +1196,29 @@
           waiting: 'Ожидание данных…',
           noSteps: 'Пока нет шагов модели',
           compactedPill: '⚡ сжатие',
+          modelSwitchPill: '⇄ модель',
+          effortSwitchPill: '⇄ уровень',
           alertRed: 'Близко к авто-сжатию: рекомендуется сохранить HANDOFF.md и открыть новый чат.',
           alertAmber: 'Контекст заполняется: лучше завершить текущую подзадачу и не смешивать темы.',
           alertCompaction: (n) => `В этом чате уже было авто-сжатие (${n}×).`,
-          statsCurrentChat: 'Текущий чат',
+          periodHeader: 'Все чаты за период',
+          period24: '24ч',
+          period168: '7дн',
+          chatsAndMsgs: 'Чатов / Сообщений',
+          modelCalls: 'Запросов к моделям',
           freshInput: 'Свежий вход',
           fromCache: 'Из кэша',
           output: 'Вывод (ответы)',
-          avgCache: 'Средний кэш',
-          duration: 'Длительность',
-          mediaErrors: 'Вложения / Ошибки',
-          tools: 'Инструменты',
-          modelsInChat: 'Модели в чате',
+          activeTime: 'Активное время',
+          periodActivity: 'Активность за период',
+          periodModels: (n) => `Модели за период (${n})`,
+          periodFiles: (n) => `Файлы за период (${n})`,
+          periodTools: (n) => `Инструменты за период (${n})`,
+          periodChats: (n) => `Активные чаты (${n})`,
           stepsShort: (n) => `${n} шаг.`,
-          allChats: 'Все чаты',
-          period24: '24ч',
-          period168: '7дн',
-          activeChats: 'Активных чатов',
-          modelCalls: 'Запросов к моделям',
-          inPlusOut: 'Вход + вывод',
+          touchesShort: (n) => `${n} обр.`,
+          callsShort: (n) => `${n} выз.`,
+          peakShort: (k) => `пик ${k}`,
           noPeriodActivity: 'Нет активности за выбранный период',
           handoffPrompt:
             'Мы приближаемся к порогу контекстного окна. Сохрани файл HANDOFF.md в корне проекта (или в артефакт) со строгой структурой:\n' +
@@ -814,31 +1228,56 @@
             '4. Конкретные следующие шаги для продолжения в новом чистом чате.',
         },
         en: {
-          title: 'Chat Context',
+          title: 'Context Monitor',
+          autoBadge: 'Auto',
+          manualToAuto: 'Manual ↺ Auto',
+          autoActiveOption: 'Auto (active chat)',
+          autoActiveTitle: (t) => `Auto: ${t}`,
+          recentChatsCount: (n) => (n > 0 ? `Last ${n} chats` : 'Recent chats'),
           liveHint: 'Auto-refreshes every 2 seconds',
+          themeLabels: { auto: 'Auto', light: 'Light', dark: 'Dark' },
+          themeHints: { auto: 'Theme: Auto (Antigravity)', light: 'Theme: Light', dark: 'Theme: Dark' },
           thresholdLabel: 'Threshold',
+          customBtn: 'Custom',
+          customBtnVal: (v) => `Custom: ${v}`,
+          customPlaceholder: 'e.g. 300k, 500000 or 1.5M',
+          customApply: 'Apply',
+          customError: 'Enter a number, e.g. 300k, 500000 or 1.5M',
           tabContext: 'Context',
           tabStats: 'Stats',
           noChats: 'No active chats',
           currentChat: 'Current chat',
-          newChat: 'new chat',
           tokens: 'tokens',
+          noTokenLogsBanner: 'No token logs for this chat yet (fresh or empty conversation).',
+          scopeAllChat: 'All chat',
+          scopeManual: 'Manual',
+          scopeOrchestrator: 'Orchestrator',
+          scopeAll: 'All',
+          scopePlanner: 'Planner',
+          scopeExecutor: 'Executor',
           breakdown: 'Context breakdown',
           estimate: 'estimate',
           segSystem: 'System & rules',
-          segTools: 'Tools & files',
-          segAssistant: 'Assistant & thinking',
-          segUser: 'User messages',
-          footer: (outK, count, tail) => `Output: ${outK} · Tools: ${count}${tail}`,
+          subBasePrompt: 'Base prompt & rules',
+          subSystemMessages: 'System messages',
+          subHistory: 'Conversation history',
+          subCheckpoint: 'Compaction summary',
+          segFiles: (n) => (n > 0 ? `Files in context (${n})` : 'Files in context'),
+          segTools: (n) => (n > 0 ? `Tools & commands (${n})` : 'Tools & commands'),
+          segAssistant: 'Model responses',
+          segThinking: 'Thinking',
+          segUser: (media) => (media > 0 ? `User messages (${media} media)` : 'User messages'),
           primaryModel: 'Primary model',
+          singleModel: 'Model',
           lastMsg: 'Last message',
           lastStep: 'Last step',
-          cacheMsg: 'Cache (last msg)',
-          cacheStep: 'Cache (last step)',
+          cacheCombined: 'Cache (last / avg)',
           msgPeak: 'Messages / Peak',
           stepPeak: 'Steps / Peak',
+          inputOutput: 'Input + Output',
+          duration: 'Duration',
           handoffBtn: 'Copy HANDOFF prompt',
-          copiedBtn: 'Copied to clipboard!',
+          copiedBtn: 'Copied to clipboard ✓',
           copyFailed: 'Copy failed',
           recentTitle: 'Recent activity',
           modeMessages: 'Messages',
@@ -850,25 +1289,29 @@
           waiting: 'Waiting for data…',
           noSteps: 'No model steps yet',
           compactedPill: '⚡ compacted',
+          modelSwitchPill: '⇄ model',
+          effortSwitchPill: '⇄ effort',
           alertRed: 'Near auto-compaction: save HANDOFF.md and continue in a fresh chat.',
           alertAmber: 'Context filling up: finish the current subtask without mixing topics.',
           alertCompaction: (n) => `Auto-compaction occurred in this chat (${n}×).`,
-          statsCurrentChat: 'Current chat',
+          periodHeader: 'All chats in period',
+          period24: '24h',
+          period168: '7d',
+          chatsAndMsgs: 'Chats / Messages',
+          modelCalls: 'Model calls',
           freshInput: 'Fresh input',
           fromCache: 'From cache',
           output: 'Output',
-          avgCache: 'Avg cache',
-          duration: 'Duration',
-          mediaErrors: 'Media / Errors',
-          tools: 'Tools',
-          modelsInChat: 'Models in chat',
+          activeTime: 'Active time',
+          periodActivity: 'Period activity',
+          periodModels: (n) => `Models in period (${n})`,
+          periodFiles: (n) => `Files in period (${n})`,
+          periodTools: (n) => `Tools in period (${n})`,
+          periodChats: (n) => `Active chats (${n})`,
           stepsShort: (n) => `${n} steps`,
-          allChats: 'All chats',
-          period24: '24h',
-          period168: '7d',
-          activeChats: 'Active chats',
-          modelCalls: 'Model calls',
-          inPlusOut: 'Input + output',
+          touchesShort: (n) => `${n} refs`,
+          callsShort: (n) => `${n} calls`,
+          peakShort: (k) => `peak ${k}`,
           noPeriodActivity: 'No activity in this period',
           handoffPrompt:
             'We are approaching the context window threshold. Save a HANDOFF.md file in the project root (or as an artifact) with this strict structure:\n' +
@@ -884,21 +1327,67 @@
 
       let selectedConvId = window.sidecar?.conversationId || params.get('conversationId') || '';
       let followActive = !params.get('conversationId');
+
       const savedThreshold = Number(localStorage.getItem(THRESHOLD_KEY));
-      let limitTokens = Number.isFinite(savedThreshold) && savedThreshold >= 10000 ? savedThreshold : 200000;
+      let limitTokens =
+        Number.isFinite(savedThreshold) && savedThreshold >= 10000 && savedThreshold <= 10000000
+          ? savedThreshold
+          : 200000;
+      let isCustomInputOpen = false;
+
       const savedLang = localStorage.getItem(LANG_KEY);
       let hasManualLang = savedLang === 'ru' || savedLang === 'en';
       let lang = hasManualLang
         ? savedLang
         : ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en');
+
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      let themeMode = savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'auto'
+        ? savedTheme
+        : 'auto';
+
       let historyMode = localStorage.getItem(HISTORY_MODE_KEY) === 'steps' ? 'steps' : 'messages';
       let activeTab = 'context';
       let periodHours = Number(localStorage.getItem(PERIOD_KEY)) === 168 ? 168 : 24;
+      let selectedScope = 'allChat';
       let lastData = null;
+      let lastRev = '';
+      let didInitialPrefsSync = false;
+
+      async function syncPrefsToBackend() {
+        try {
+          const q = new URLSearchParams({
+            threshold: String(limitTokens),
+            language: hasManualLang ? lang : 'auto',
+            historyMode,
+            themeMode,
+          });
+          const fetcher = window.sidecar?.fetch ? window.sidecar.fetch.bind(window.sidecar) : fetch;
+          await fetcher(`/api/prefs?${q.toString()}`, { method: 'GET' });
+        } catch {
+          // ignore prefs sync errors
+        }
+      }
+
+      let isSystemExpanded = false;
+      let isFilesExpanded = false;
+      let isToolsExpanded = false;
+      let isPeriodModelsExpanded = true;
+      let isPeriodFilesExpanded = false;
+      let isPeriodToolsExpanded = false;
+      let isPeriodChatsExpanded = false;
 
       function t() {
         return I18N[lang] || I18N.en;
       }
+
+      const escapeHtml = (str) =>
+        String(str ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
 
       const fmtNum = (n) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
       const fmtK = (n) => `${Math.round((Number(n) || 0) / 1000)}k`;
@@ -921,16 +1410,108 @@
         return lang === 'ru' ? `${mins}м` : `${mins}m`;
       };
 
+      function parseThresholdInput(raw) {
+        let cleaned = String(raw || '')
+          .trim()
+          .toLowerCase()
+          .replace(/[\s_]+/g, '')
+          .replace(/,/g, '.');
+        if (!cleaned) return null;
+
+        let mult = 1;
+        if (cleaned.endsWith('m') || cleaned.endsWith('м')) {
+          mult = 1000000;
+          cleaned = cleaned.slice(0, -1);
+        } else if (cleaned.endsWith('k') || cleaned.endsWith('к')) {
+          mult = 1000;
+          cleaned = cleaned.slice(0, -1);
+        }
+
+        if (!/^\d+(\.\d+)?$/.test(cleaned)) return null;
+        const num = Number(cleaned);
+        if (!Number.isFinite(num) || num <= 0) return null;
+        const tokens = Math.round(num * mult);
+        return Math.min(Math.max(tokens, 10000), 10000000);
+      }
+
+      function detectHostDarkTheme() {
+        const hasHostBg = getComputedStyle(document.documentElement)
+          .getPropertyValue('--background')
+          .trim().length > 0;
+        if (hasHostBg) {
+          const probe = document.createElement('span');
+          probe.style.cssText = 'position:absolute;visibility:hidden;color:var(--background, #f7f7f8)';
+          document.documentElement.appendChild(probe);
+          const c = getComputedStyle(probe).color;
+          probe.remove();
+          const nums = (c.match(/[\d.]+/g) || []).map(Number);
+          if (nums.length >= 3) {
+            const scale = c.startsWith('color(') ? 1 : 255;
+            const [r, g, b] = nums.slice(0, 3).map((v) => v / scale);
+            const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            return lum < 0.5;
+          }
+        }
+        if (lastData && typeof lastData.isDarkTheme === 'boolean') {
+          return lastData.isDarkTheme;
+        }
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      function applyTheme() {
+        if (themeMode === 'light') {
+          document.documentElement.dataset.theme = 'light';
+          document.documentElement.dataset.themeMode = 'light';
+        } else if (themeMode === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+          document.documentElement.dataset.themeMode = 'dark';
+        } else {
+          delete document.documentElement.dataset.themeMode;
+          document.documentElement.dataset.theme = detectHostDarkTheme() ? 'dark' : 'light';
+        }
+      }
+
+      applyTheme();
+      new MutationObserver(applyTheme).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['style'],
+      });
+
+      function effectiveScopeFor(stats) {
+        if (!stats || !stats.scopedSnapshots) return 'allChat';
+        if (stats.scopedSnapshots[selectedScope]) return selectedScope;
+        return 'allChat';
+      }
+
+      function scopeGroupOf(scope) {
+        if (scope === 'manualAll' || scope.startsWith('manualModel:')) return 'manual';
+        if (scope === 'orchestratorAll' || scope === 'orchestratorPlanner' || scope === 'orchestratorExecutor') {
+          return 'orchestrator';
+        }
+        return 'allChat';
+      }
+
+      function isAggregateScope(scope) {
+        return scope === 'allChat' || scope === 'manualAll' || scope === 'orchestratorAll';
+      }
+
       function applyStaticLabels() {
         const s = t();
         document.documentElement.lang = lang;
         $('ui-title').textContent = s.title;
+
+        $('mode-badge').textContent = s.autoBadge;
+        $('mode-reset-btn').textContent = s.manualToAuto;
+        $('mode-badge').classList.toggle('hidden', !followActive);
+        $('mode-reset-btn').classList.toggle('hidden', followActive);
+
+        const themeIcons = { auto: '◐', light: '☀', dark: '☾' };
+        $('theme-btn').textContent = `${themeIcons[themeMode]} ${s.themeLabels[themeMode]}`;
+        $('theme-btn').title = s.themeHints[themeMode];
+
         $('lang-btn').textContent = lang.toUpperCase();
         $('live-badge').title = s.liveHint;
-        $('lbl-threshold').textContent = s.thresholdLabel;
-        document.querySelectorAll('#threshold-presets .preset-btn').forEach((btn) => {
-          btn.classList.toggle('active', Number(btn.dataset.limit) === limitTokens);
-        });
+
         $('tab-context').textContent = s.tabContext;
         $('tab-stats').textContent = s.tabStats;
         $('tab-context').classList.toggle('active', activeTab === 'context');
@@ -938,12 +1519,25 @@
         $('view-context').classList.toggle('hidden', activeTab !== 'context');
         $('view-stats').classList.toggle('hidden', activeTab !== 'stats');
 
+        $('lbl-threshold').textContent = s.thresholdLabel;
+        const isPreset = THRESHOLD_PRESETS.includes(limitTokens);
+        document.querySelectorAll('#threshold-presets .preset-btn[data-limit]').forEach((btn) => {
+          btn.classList.toggle('active', Number(btn.dataset.limit) === limitTokens);
+        });
+        const customBtn = $('custom-threshold-btn');
+        customBtn.textContent = isPreset ? s.customBtn : s.customBtnVal(fmtCompact(limitTokens));
+        customBtn.classList.toggle('active', !isPreset || isCustomInputOpen);
+        $('custom-threshold-row').classList.toggle('hidden', !isCustomInputOpen);
+        $('custom-threshold-input').placeholder = s.customPlaceholder;
+        $('custom-threshold-apply').textContent = s.customApply;
+
         $('lbl-breakdown').textContent = s.breakdown;
         $('lbl-estimate').textContent = s.estimate;
-        $('lbl-model').textContent = s.primaryModel;
         $('lbl-delta').textContent = historyMode === 'messages' ? s.lastMsg : s.lastStep;
-        $('lbl-cache').textContent = historyMode === 'messages' ? s.cacheMsg : s.cacheStep;
+        $('lbl-cache').textContent = s.cacheCombined;
         $('lbl-peak').textContent = historyMode === 'messages' ? s.msgPeak : s.stepPeak;
+        $('lbl-io').textContent = s.inputOutput;
+        $('lbl-dur').textContent = s.duration;
         if (!$('handoff-btn').classList.contains('copied')) {
           $('handoff-btn').textContent = s.handoffBtn;
         }
@@ -956,69 +1550,98 @@
         $('col-ctx').textContent = s.colCtx;
         $('col-delta').textContent = s.colDelta;
 
-        $('lbl-stats-chat').textContent = s.statsCurrentChat;
-        $('lbl-st-fresh').textContent = s.freshInput;
-        $('lbl-st-cache').textContent = s.fromCache;
-        $('lbl-st-out').textContent = s.output;
-        $('lbl-st-avgcache').textContent = s.avgCache;
-        $('lbl-st-dur').textContent = s.duration;
-        $('lbl-st-mediaerr').textContent = s.mediaErrors;
-        $('lbl-st-tools').textContent = s.tools;
-        $('lbl-st-models').textContent = s.modelsInChat;
-        $('lbl-stats-all').textContent = s.allChats;
+        $('lbl-period-header').textContent = s.periodHeader;
         $('period-24').textContent = s.period24;
         $('period-168').textContent = s.period168;
         $('period-24').classList.toggle('active', periodHours === 24);
         $('period-168').classList.toggle('active', periodHours === 168);
-        $('lbl-p-chats').textContent = s.activeChats;
+        $('lbl-p-chats').textContent = s.chatsAndMsgs;
         $('lbl-p-calls').textContent = s.modelCalls;
-        $('lbl-p-inout').textContent = s.inPlusOut;
+        $('lbl-p-fresh').textContent = s.freshInput;
         $('lbl-p-cache').textContent = s.fromCache;
+        $('lbl-p-out').textContent = s.output;
+        $('lbl-p-time').textContent = s.activeTime;
+        $('lbl-period-activity').textContent = s.periodActivity;
       }
-
-      function syncScheme() {
-        const probe = document.createElement('span');
-        probe.style.cssText = 'position:absolute;visibility:hidden;color:var(--background, #f7f7f8)';
-        document.documentElement.appendChild(probe);
-        const c = getComputedStyle(probe).color;
-        probe.remove();
-        const nums = (c.match(/[\d.]+/g) || []).map(Number);
-        if (nums.length < 3) return;
-        const scale = c.startsWith('color(') ? 1 : 255;
-        const [r, g, b] = nums.slice(0, 3).map((v) => v / scale);
-        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        document.documentElement.dataset.theme = lum < 0.5 ? 'dark' : 'light';
-      }
-      syncScheme();
-      new MutationObserver(syncScheme).observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['style'],
-      });
 
       applyStaticLabels();
+
+      $('mode-reset-btn').addEventListener('click', () => {
+        followActive = true;
+        selectedConvId = window.sidecar?.conversationId || '';
+        lastRev = '';
+        applyStaticLabels();
+        poll();
+      });
+
+      $('theme-btn').addEventListener('click', () => {
+        themeMode = themeMode === 'auto' ? 'light' : themeMode === 'light' ? 'dark' : 'auto';
+        localStorage.setItem(THEME_KEY, themeMode);
+        applyTheme();
+        applyStaticLabels();
+        syncPrefsToBackend();
+      });
 
       $('lang-btn').addEventListener('click', () => {
         lang = lang === 'ru' ? 'en' : 'ru';
         hasManualLang = true;
         localStorage.setItem(LANG_KEY, lang);
         applyStaticLabels();
+        syncPrefsToBackend();
         if (lastData) render(lastData);
       });
 
-      document.querySelectorAll('#threshold-presets .preset-btn').forEach((btn) => {
+      document.querySelectorAll('#threshold-presets .preset-btn[data-limit]').forEach((btn) => {
         btn.addEventListener('click', (e) => {
           const val = Number(e.currentTarget.dataset.limit);
           if (!Number.isFinite(val) || val < 10000) return;
           limitTokens = val;
+          isCustomInputOpen = false;
+          $('custom-threshold-error').classList.add('hidden');
           localStorage.setItem(THRESHOLD_KEY, String(limitTokens));
           applyStaticLabels();
+          syncPrefsToBackend();
           if (lastData) render(lastData);
         });
+      });
+
+      $('custom-threshold-btn').addEventListener('click', () => {
+        isCustomInputOpen = !isCustomInputOpen;
+        $('custom-threshold-error').classList.add('hidden');
+        if (isCustomInputOpen) {
+          $('custom-threshold-input').value = THRESHOLD_PRESETS.includes(limitTokens) ? '' : fmtCompact(limitTokens);
+        }
+        applyStaticLabels();
+        if (isCustomInputOpen) {
+          setTimeout(() => $('custom-threshold-input').focus(), 0);
+        }
+      });
+
+      function applyCustomThreshold() {
+        const val = parseThresholdInput($('custom-threshold-input').value);
+        if (val === null) {
+          $('custom-threshold-error').textContent = t().customError;
+          $('custom-threshold-error').classList.remove('hidden');
+          return;
+        }
+        limitTokens = val;
+        isCustomInputOpen = false;
+        $('custom-threshold-error').classList.add('hidden');
+        localStorage.setItem(THRESHOLD_KEY, String(limitTokens));
+        applyStaticLabels();
+        syncPrefsToBackend();
+        if (lastData) render(lastData);
+      }
+
+      $('custom-threshold-apply').addEventListener('click', applyCustomThreshold);
+      $('custom-threshold-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') applyCustomThreshold();
       });
 
       ['tab-context', 'tab-stats'].forEach((id) => {
         $(id).addEventListener('click', (e) => {
           activeTab = e.currentTarget.dataset.tab === 'stats' ? 'stats' : 'context';
+          lastRev = '';
           applyStaticLabels();
           poll();
         });
@@ -1029,6 +1652,7 @@
           historyMode = e.currentTarget.dataset.mode === 'steps' ? 'steps' : 'messages';
           localStorage.setItem(HISTORY_MODE_KEY, historyMode);
           applyStaticLabels();
+          syncPrefsToBackend();
           if (lastData) render(lastData);
         });
       });
@@ -1037,14 +1661,24 @@
         $(id).addEventListener('click', (e) => {
           periodHours = Number(e.currentTarget.dataset.hours) === 168 ? 168 : 24;
           localStorage.setItem(PERIOD_KEY, String(periodHours));
+          lastRev = '';
           applyStaticLabels();
           poll();
         });
       });
 
       $('conv-select').addEventListener('change', (e) => {
-        selectedConvId = e.target.value;
-        followActive = false;
+        const val = e.target.value;
+        if (!val || val === '__auto__') {
+          followActive = true;
+          selectedConvId = window.sidecar?.conversationId || '';
+        } else {
+          selectedConvId = val;
+          followActive = false;
+        }
+        selectedScope = 'allChat';
+        lastRev = '';
+        applyStaticLabels();
         poll();
       });
 
@@ -1073,23 +1707,107 @@
         }
       });
 
-      function renderBreakdown(stats, s) {
-        const b = stats?.breakdown || {
-          systemTokens: 0,
-          toolsTokens: 0,
-          assistantTokens: 0,
-          userTokens: 0,
-          totalOutputTokens: 0,
-          toolCallsCount: 0,
-          topTools: [],
+      function renderScopeSelector(stats, s) {
+        const box = $('scope-box');
+        if (!stats || !stats.exists || stats.totalModelSteps === 0) {
+          box.classList.add('hidden');
+          box.innerHTML = '';
+          return;
+        }
+
+        const hasManual = Boolean(stats.hasManualMode);
+        const hasOrch = Boolean(stats.hasOrchestratorMode);
+        const manualModels = Array.isArray(stats.manualModels) ? stats.manualModels : [];
+        const snaps = stats.scopedSnapshots || {};
+        const showBothGroups = hasManual && hasOrch;
+        const showManualSubtabs = hasManual && manualModels.length > 1;
+        const hasPlanner = Boolean(snaps.orchestratorPlanner);
+        const hasExecutor = Boolean(snaps.orchestratorExecutor);
+        const showOrchSubtabs = hasOrch && (hasPlanner || hasExecutor);
+
+        if (!showBothGroups && !showManualSubtabs && !showOrchSubtabs) {
+          box.classList.add('hidden');
+          box.innerHTML = '';
+          return;
+        }
+
+        const effective = effectiveScopeFor(stats);
+        const group = scopeGroupOf(effective);
+        let html = '';
+
+        const renderManualBar = (singleModeRoot) => {
+          const allSel = singleModeRoot
+            ? effective === 'allChat' || effective === 'manualAll'
+            : effective === 'manualAll';
+          const btns = [
+            `<button type="button" class="scope-btn compact${allSel ? ' active' : ''}" data-scope="${singleModeRoot ? 'allChat' : 'manualAll'}">${escapeHtml(s.scopeAll)}</button>`,
+          ];
+          for (const m of manualModels) {
+            const sc = `manualModel:${m.id}`;
+            btns.push(
+              `<button type="button" class="scope-btn compact${effective === sc ? ' active' : ''}" data-scope="${escapeHtml(sc)}">${escapeHtml(m.shortName)}</button>`
+            );
+          }
+          return `<div class="scope-bar">${btns.join('')}</div>`;
         };
-        const used = stats?.contextTokens || 0;
+
+        const renderOrchBar = (singleModeRoot) => {
+          const allSel = singleModeRoot
+            ? effective === 'allChat' || effective === 'orchestratorAll'
+            : effective === 'orchestratorAll';
+          const btns = [
+            `<button type="button" class="scope-btn compact${allSel ? ' active' : ''}" data-scope="${singleModeRoot ? 'allChat' : 'orchestratorAll'}">${escapeHtml(s.scopeAll)}</button>`,
+          ];
+          if (hasPlanner) {
+            btns.push(
+              `<button type="button" class="scope-btn compact${effective === 'orchestratorPlanner' ? ' active' : ''}" data-scope="orchestratorPlanner">${escapeHtml(s.scopePlanner)}</button>`
+            );
+          }
+          if (hasExecutor) {
+            btns.push(
+              `<button type="button" class="scope-btn compact${effective === 'orchestratorExecutor' ? ' active' : ''}" data-scope="orchestratorExecutor">${escapeHtml(s.scopeExecutor)}</button>`
+            );
+          }
+          return `<div class="scope-bar">${btns.join('')}</div>`;
+        };
+
+        if (showBothGroups) {
+          html +=
+            `<div class="scope-bar">` +
+            `<button type="button" class="scope-btn${effective === 'allChat' ? ' active' : ''}" data-scope="allChat">${escapeHtml(s.scopeAllChat)}</button>` +
+            `<button type="button" class="scope-btn${group === 'manual' ? ' active' : ''}" data-scope="manualAll">${escapeHtml(s.scopeManual)}</button>` +
+            `<button type="button" class="scope-btn${group === 'orchestrator' ? ' active' : ''}" data-scope="orchestratorAll">${escapeHtml(s.scopeOrchestrator)}</button>` +
+            `</div>`;
+          if (group === 'manual' && showManualSubtabs) html += renderManualBar(false);
+          else if (group === 'orchestrator' && showOrchSubtabs) html += renderOrchBar(false);
+        } else if (showOrchSubtabs) {
+          html += `<span class="scope-label">${escapeHtml(s.scopeOrchestrator)}</span>${renderOrchBar(true)}`;
+        } else if (showManualSubtabs) {
+          html += `<span class="scope-label">${escapeHtml(s.scopeManual)}</span>${renderManualBar(true)}`;
+        }
+
+        box.innerHTML = html;
+        box.classList.remove('hidden');
+        box.querySelectorAll('.scope-btn[data-scope]').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            selectedScope = e.currentTarget.dataset.scope || 'allChat';
+            if (lastData) render(lastData);
+          });
+        });
+      }
+
+      function renderBreakdown(scoped, hasData, s) {
+        const b = scoped?.breakdown || {};
+        const used = scoped?.contextTokens || 0;
         const denom = Math.max(1, Math.max(limitTokens, used));
+
         const segments = [
-          { label: s.segSystem, tokens: b.systemTokens || 0, color: 'var(--purple)' },
-          { label: s.segTools, tokens: b.toolsTokens || 0, color: 'var(--blue)' },
-          { label: s.segAssistant, tokens: b.assistantTokens || 0, color: 'var(--teal)' },
-          { label: s.segUser, tokens: b.userTokens || 0, color: 'var(--orange)' },
+          { tokens: b.systemTokens || 0, color: 'var(--purple)' },
+          { tokens: b.filesTokens || 0, color: 'var(--blue)' },
+          { tokens: b.toolsTokens || 0, color: 'var(--cyan)' },
+          { tokens: b.assistantTokens || 0, color: 'var(--teal)' },
+          { tokens: b.thinkingTokens || 0, color: 'var(--mint)' },
+          { tokens: b.userTokens || 0, color: 'var(--orange)' },
         ];
 
         $('breakdown-bar').innerHTML = segments
@@ -1100,103 +1818,328 @@
           })
           .join('');
 
-        $('breakdown-legend').innerHTML = segments
-          .map((seg) => {
-            const pctLim = limitTokens > 0 ? Math.round((seg.tokens / limitTokens) * 100) : 0;
-            const valText = stats && stats.totalModelSteps > 0 ? `${fmtK(seg.tokens)} (${pctLim}%)` : '—';
-            return (
-              `<div class="legend-item">` +
-              `<span class="legend-dot" style="background:${seg.color}"></span>` +
-              `<span class="legend-name" title="${seg.label}">${seg.label}</span>` +
-              `<span class="legend-val">${valText}</span>` +
-              `</div>`
-            );
-          })
-          .join('');
-
-        const footer = $('tools-footer');
-        if (stats && stats.totalModelSteps > 0 && (b.totalOutputTokens > 0 || b.toolCallsCount > 0)) {
-          const tail = Array.isArray(b.topTools) && b.topTools.length > 0
-            ? ' (' + b.topTools.map((x) => `${x.name}×${x.count}`).join(', ') + ')'
-            : '';
-          footer.textContent = s.footer(fmtK(b.totalOutputTokens), b.toolCallsCount, tail);
-          footer.classList.remove('hidden');
-        } else {
-          footer.classList.add('hidden');
+        const listEl = $('breakdown-list');
+        if (!hasData) {
+          listEl.innerHTML = `<div class="mono" style="font-size:11.5px;color:var(--fg-muted)">—</div>`;
+          return;
         }
+
+        const pctOfLimit = (tok) => (limitTokens > 0 ? Math.round((tok / limitTokens) * 100) : 0);
+
+        const rowHtml = ({ color, title, tokens, expandKey, expanded, hasChildren }) => {
+          const chev = hasChildren ? `<span class="chev">${expanded ? '▾' : '▸'}</span>` : '';
+          const tag = hasChildren ? 'button' : 'div';
+          const attr = hasChildren ? `type="button" data-bd-toggle="${expandKey}"` : '';
+          return (
+            `<${tag} ${attr} class="bd-row${hasChildren ? ' clickable' : ''}">` +
+            `<span class="legend-dot" style="background:${color}"></span>` +
+            `<span class="bd-title" title="${escapeHtml(title)}">${escapeHtml(title)}</span>` +
+            chev +
+            `<span class="bd-spacer"></span>` +
+            `<span class="bd-tok">${fmtK(tokens)}</span>` +
+            `<span class="bd-pct">${pctOfLimit(tokens)}%</span>` +
+            `</${tag}>`
+          );
+        };
+
+        const sysSubItems = [
+          { label: s.subBasePrompt, tokens: b.basePromptTokens || 0 },
+          { label: s.subSystemMessages, tokens: b.systemMessageTokens || 0 },
+          { label: s.subHistory, tokens: b.historyTokens || 0 },
+          { label: s.subCheckpoint, tokens: b.checkpointSummaryTokens || 0 },
+        ].filter((x) => x.tokens > 0);
+
+        const topFiles = Array.isArray(b.topFiles) ? b.topFiles : [];
+        const topTools = Array.isArray(b.topTools) ? b.topTools : [];
+
+        let html = '';
+
+        if ((b.systemTokens || 0) > 0) {
+          const canExpandSys = sysSubItems.length > 1;
+          html += rowHtml({
+            color: 'var(--purple)',
+            title: s.segSystem,
+            tokens: b.systemTokens,
+            expandKey: 'sys',
+            expanded: isSystemExpanded,
+            hasChildren: canExpandSys,
+          });
+          if (canExpandSys && isSystemExpanded) {
+            html += `<div class="sub-box">` +
+              sysSubItems.map((sub) =>
+                `<div class="sub-item">` +
+                `<span class="sub-name muted">${escapeHtml(sub.label)}</span>` +
+                `<span class="bd-spacer"></span>` +
+                `<span class="bd-tok" style="color:var(--fg-muted);font-weight:500">${fmtK(sub.tokens)}</span>` +
+                `<span class="bd-pct">${pctOfLimit(sub.tokens)}%</span>` +
+                `</div>`
+              ).join('') +
+              `</div>`;
+          }
+        }
+
+        if ((b.filesTokens || 0) > 0) {
+          const canExpandFiles = topFiles.length > 0;
+          html += rowHtml({
+            color: 'var(--blue)',
+            title: s.segFiles(topFiles.length),
+            tokens: b.filesTokens,
+            expandKey: 'files',
+            expanded: isFilesExpanded,
+            hasChildren: canExpandFiles,
+          });
+          if (canExpandFiles && isFilesExpanded) {
+            html += `<div class="sub-box">` +
+              topFiles.map((f) =>
+                `<div class="sub-item">` +
+                `<span class="sub-name mono-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span>` +
+                `<span class="sub-count">${f.count}×</span>` +
+                `</div>`
+              ).join('') +
+              `</div>`;
+          }
+        }
+
+        if ((b.toolsTokens || 0) > 0) {
+          const canExpandTools = topTools.length > 0;
+          html += rowHtml({
+            color: 'var(--cyan)',
+            title: s.segTools(b.toolCallsCount || 0),
+            tokens: b.toolsTokens,
+            expandKey: 'tools',
+            expanded: isToolsExpanded,
+            hasChildren: canExpandTools,
+          });
+          if (canExpandTools && isToolsExpanded) {
+            html += `<div class="sub-box">` +
+              topTools.map((tl) =>
+                `<div class="sub-item">` +
+                `<span class="sub-name mono-name" title="${escapeHtml(tl.name)}">${escapeHtml(tl.name)}</span>` +
+                `<span class="sub-count">${tl.count}×</span>` +
+                `</div>`
+              ).join('') +
+              `</div>`;
+          }
+        }
+
+        if ((b.assistantTokens || 0) > 0) {
+          html += rowHtml({
+            color: 'var(--teal)',
+            title: s.segAssistant,
+            tokens: b.assistantTokens,
+            hasChildren: false,
+          });
+        }
+
+        if ((b.thinkingTokens || 0) > 0) {
+          html += rowHtml({
+            color: 'var(--mint)',
+            title: s.segThinking,
+            tokens: b.thinkingTokens,
+            hasChildren: false,
+          });
+        }
+
+        if ((b.userTokens || 0) > 0) {
+          html += rowHtml({
+            color: 'var(--orange)',
+            title: s.segUser(b.mediaCount || 0),
+            tokens: b.userTokens,
+            hasChildren: false,
+          });
+        }
+
+        listEl.innerHTML = html || `<div class="mono" style="font-size:11.5px;color:var(--fg-muted)">—</div>`;
+
+        listEl.querySelectorAll('[data-bd-toggle]').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            const key = e.currentTarget.dataset.bdToggle;
+            if (key === 'sys') isSystemExpanded = !isSystemExpanded;
+            else if (key === 'files') isFilesExpanded = !isFilesExpanded;
+            else if (key === 'tools') isToolsExpanded = !isToolsExpanded;
+            renderBreakdown(scoped, hasData, s);
+          });
+        });
       }
 
-      function renderStatsTab(stats, periodStats, s) {
-        if (!stats || !stats.exists || stats.totalModelSteps === 0) {
-          $('chat-stats-empty').textContent = s.noSteps;
-          $('chat-stats-empty').classList.remove('hidden');
-          $('chat-stats-body').classList.add('hidden');
-        } else {
-          $('chat-stats-empty').classList.add('hidden');
-          $('chat-stats-body').classList.remove('hidden');
-          const ss = stats.sessionStats || {};
-          const b = stats.breakdown || {};
-          $('st-fresh').textContent = fmtCompact(ss.totalInputTokens || 0);
-          $('st-cache').textContent = fmtCompact(ss.totalCacheReadTokens || 0);
-          $('st-out').textContent = fmtCompact(ss.totalOutputTokens || 0);
-          $('st-avgcache').textContent = `${ss.avgCacheHitPercent || 0}%`;
-          $('st-dur').textContent = fmtDuration(ss.durationSeconds || 0);
-          $('st-mediaerr').textContent = `${ss.mediaCount || 0} / ${ss.errorCount || 0}`;
-
-          if ((b.toolCallsCount || 0) > 0) {
-            const topNames = Array.isArray(b.topTools)
-              ? b.topTools.map((x) => `${x.name}×${x.count}`).join(', ')
-              : '';
-            $('st-tools').textContent = topNames ? `${b.toolCallsCount} (${topNames})` : String(b.toolCallsCount);
-            $('st-tools-row').classList.remove('hidden');
-          } else {
-            $('st-tools-row').classList.add('hidden');
-          }
-
-          const models = Array.isArray(ss.modelUsage) ? ss.modelUsage : [];
-          $('st-models-list').innerHTML = models
-            .slice(0, 5)
-            .map((m) => `<div class="step-row"><span class="mono">${m.name}</span><span class="step-delta">${s.stepsShort(m.steps)}</span></div>`)
-            .join('');
-        }
-
+      function renderStatsTab(periodStats, s) {
         if (!periodStats || periodStats.modelSteps === 0) {
           $('period-stats-empty').textContent = s.noPeriodActivity;
           $('period-stats-empty').classList.remove('hidden');
           $('period-stats-body').classList.add('hidden');
-        } else {
-          $('period-stats-empty').classList.add('hidden');
-          $('period-stats-body').classList.remove('hidden');
-          $('p-chats').textContent = String(periodStats.activeChats || 0);
-          $('p-calls').textContent = String(periodStats.modelSteps || 0);
-          $('p-inout').textContent = `${fmtCompact(periodStats.totalInputTokens || 0)} + ${fmtCompact(periodStats.totalOutputTokens || 0)}`;
-          $('p-cache').textContent = `${fmtCompact(periodStats.totalCacheReadTokens || 0)} (${periodStats.avgCacheHitPercent || 0}%)`;
-
-          const pModels = Array.isArray(periodStats.modelUsage) ? periodStats.modelUsage : [];
-          $('p-models-list').innerHTML = pModels
-            .slice(0, 5)
-            .map((m) => `<div class="step-row"><span class="mono">${m.name}</span><span class="step-delta">${s.stepsShort(m.steps)}</span></div>`)
-            .join('');
+          return;
         }
+
+        $('period-stats-empty').classList.add('hidden');
+        $('period-stats-body').classList.remove('hidden');
+
+        $('p-chats').textContent = `${periodStats.activeChats || 0} / ${periodStats.userMessages || 0}`;
+        const callsText = (periodStats.compactionEvents || 0) > 0
+          ? `${periodStats.modelSteps} · ⚡ ${periodStats.compactionEvents}`
+          : String(periodStats.modelSteps || 0);
+        $('p-calls').textContent = callsText;
+        $('p-fresh').textContent = fmtCompact(periodStats.totalInputTokens || 0);
+        $('p-cache').textContent = `${fmtCompact(periodStats.totalCacheReadTokens || 0)} (${periodStats.avgCacheHitPercent || 0}%)`;
+        $('p-out').textContent = fmtCompact(periodStats.totalOutputTokens || 0);
+        $('p-time').textContent = fmtDuration(periodStats.totalDurationSeconds || 0);
+
+        const secBox = $('period-activity-sections');
+        const models = Array.isArray(periodStats.modelUsage) ? periodStats.modelUsage : [];
+        const files = Array.isArray(periodStats.topFiles) ? periodStats.topFiles : [];
+        const tools = Array.isArray(periodStats.topTools) ? periodStats.topTools : [];
+        const chats = Array.isArray(periodStats.activeChatItems) ? periodStats.activeChatItems : [];
+
+        let html = '';
+
+        const secHeader = (key, color, title, trailing, expanded) =>
+          `<button type="button" class="period-sec-btn" data-psec="${key}">` +
+          `<span class="legend-dot" style="background:${color}"></span>` +
+          `<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(title)}</span>` +
+          `<span class="chev">${expanded ? '▾' : '▸'}</span>` +
+          `<span class="period-sec-trailing">${escapeHtml(trailing)}</span>` +
+          `</button>`;
+
+        if (models.length > 0) {
+          html += secHeader('models', 'var(--purple)', s.periodModels(models.length), s.stepsShort(periodStats.modelSteps || 0), isPeriodModelsExpanded);
+          if (isPeriodModelsExpanded) {
+            html += `<div class="period-list">` +
+              models.map((m) => {
+                const eff = m.effort ? `<span class="effort-pill" style="margin-left:0">${escapeHtml(m.effort)}</span>` : '';
+                const outPart = m.outputTokens > 0 ? ` · ${fmtCompact(m.outputTokens)}` : '';
+                return (
+                  `<div class="model-row">` +
+                  `<span class="model-name">${escapeHtml(m.displayName || m.name)}</span>` +
+                  eff +
+                  `<span class="model-meta">${escapeHtml(s.stepsShort(m.steps) + outPart)}</span>` +
+                  `</div>`
+                );
+              }).join('') +
+              `</div>`;
+          }
+        }
+
+        if (files.length > 0) {
+          html += secHeader('files', 'var(--blue)', s.periodFiles(files.length), s.touchesShort(periodStats.totalFileTouches || 0), isPeriodFilesExpanded);
+          if (isPeriodFilesExpanded) {
+            html += `<div class="sub-box" style="margin-left:10px">` +
+              files.map((f) =>
+                `<div class="sub-item">` +
+                `<span class="sub-name mono-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span>` +
+                `<span class="sub-count">${f.count}×</span>` +
+                `</div>`
+              ).join('') +
+              `</div>`;
+          }
+        }
+
+        if (tools.length > 0) {
+          html += secHeader('tools', 'var(--cyan)', s.periodTools(tools.length), s.callsShort(periodStats.totalToolCalls || 0), isPeriodToolsExpanded);
+          if (isPeriodToolsExpanded) {
+            html += `<div class="sub-box" style="margin-left:10px">` +
+              tools.map((tl) =>
+                `<div class="sub-item">` +
+                `<span class="sub-name mono-name" title="${escapeHtml(tl.name)}">${escapeHtml(tl.name)}</span>` +
+                `<span class="sub-count">${tl.count}×</span>` +
+                `</div>`
+              ).join('') +
+              `</div>`;
+          }
+        }
+
+        if (chats.length > 0) {
+          html += secHeader('chats', 'var(--teal)', s.periodChats(chats.length), s.peakShort(fmtK(periodStats.peakTokens || 0)), isPeriodChatsExpanded);
+          if (isPeriodChatsExpanded) {
+            html += `<div class="period-list">` +
+              chats.map((ch) =>
+                `<button type="button" class="chat-jump-btn" data-jump-chat="${escapeHtml(ch.id)}">` +
+                `<span class="chat-jump-title" title="${escapeHtml(ch.title)}">${escapeHtml(ch.title)}</span>` +
+                `<span class="chat-jump-peak">${ch.peakTokens > 0 ? fmtK(ch.peakTokens) : '—'}</span>` +
+                `</button>`
+              ).join('') +
+              `</div>`;
+          }
+        }
+
+        secBox.innerHTML = html;
+
+        secBox.querySelectorAll('[data-psec]').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            const key = e.currentTarget.dataset.psec;
+            if (key === 'models') isPeriodModelsExpanded = !isPeriodModelsExpanded;
+            else if (key === 'files') isPeriodFilesExpanded = !isPeriodFilesExpanded;
+            else if (key === 'tools') isPeriodToolsExpanded = !isPeriodToolsExpanded;
+            else if (key === 'chats') isPeriodChatsExpanded = !isPeriodChatsExpanded;
+            renderStatsTab(periodStats, s);
+          });
+        });
+
+        secBox.querySelectorAll('[data-jump-chat]').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.dataset.jumpChat;
+            if (!id) return;
+            selectedConvId = id;
+            followActive = false;
+            selectedScope = 'allChat';
+            activeTab = 'context';
+            lastRev = '';
+            applyStaticLabels();
+            poll();
+          });
+        });
       }
 
       function render(data) {
         lastData = data;
+        if (!didInitialPrefsSync) {
+          didInitialPrefsSync = true;
+          const p = data.prefs;
+          let adopted = false;
+          if (p && typeof p === 'object') {
+            if (!localStorage.getItem(THRESHOLD_KEY) && Number.isFinite(p.threshold) && p.threshold >= 10000) {
+              limitTokens = p.threshold;
+              localStorage.setItem(THRESHOLD_KEY, String(limitTokens));
+              adopted = true;
+            }
+            if (!localStorage.getItem(LANG_KEY) && (p.language === 'ru' || p.language === 'en')) {
+              lang = p.language;
+              hasManualLang = true;
+              localStorage.setItem(LANG_KEY, lang);
+              adopted = true;
+            }
+            if (!localStorage.getItem(HISTORY_MODE_KEY) && (p.historyMode === 'messages' || p.historyMode === 'steps')) {
+              historyMode = p.historyMode;
+              localStorage.setItem(HISTORY_MODE_KEY, historyMode);
+              adopted = true;
+            }
+            if (!localStorage.getItem(THEME_KEY) && (p.themeMode === 'auto' || p.themeMode === 'light' || p.themeMode === 'dark')) {
+              themeMode = p.themeMode;
+              localStorage.setItem(THEME_KEY, themeMode);
+              adopted = true;
+            }
+          }
+          if (!adopted) {
+            syncPrefsToBackend();
+          }
+        }
         if (!hasManualLang && (data.language === 'ru' || data.language === 'en')) {
           lang = data.language;
         }
+        applyTheme();
         applyStaticLabels();
 
         const hostConv = window.sidecar?.conversationId || '';
         if (followActive && hostConv && hostConv !== selectedConvId) {
           selectedConvId = hostConv;
+          selectedScope = 'allChat';
         }
 
         const s = t();
         const select = $('conv-select');
         const recent = Array.isArray(data.recent) ? data.recent : [];
         const currentId = data.activeConversationId || '';
-        const prevValue = selectedConvId || currentId;
+        const stats = data.current;
+
+        $('lbl-recent-chats').textContent = s.recentChatsCount(recent.length);
 
         select.innerHTML = '';
         if (recent.length === 0 && !currentId) {
@@ -1205,11 +2148,17 @@
           opt.textContent = s.noChats;
           select.appendChild(opt);
         } else {
+          const autoOpt = document.createElement('option');
+          autoOpt.value = '__auto__';
+          const activeLabel = stats?.title || recent[0]?.title || '';
+          autoOpt.textContent = activeLabel ? s.autoActiveTitle(activeLabel) : s.autoActiveOption;
+          select.appendChild(autoOpt);
+
           const seen = new Set();
           if (currentId && !recent.some((r) => r.conversationId === currentId)) {
             const opt = document.createElement('option');
             opt.value = currentId;
-            opt.textContent = `${s.currentChat} (${currentId.slice(0, 8)})`;
+            opt.textContent = `${stats?.title || s.currentChat} (${currentId.slice(0, 8)})`;
             select.appendChild(opt);
             seen.add(currentId);
           }
@@ -1219,36 +2168,58 @@
             const opt = document.createElement('option');
             opt.value = item.conversationId;
             const prefix = hostConv && item.conversationId === hostConv ? '● ' : '';
-            opt.textContent = `${prefix}${item.title || item.conversationId.slice(0, 8)} (${fmtK(item.contextTokens)})`;
+            const tokPart = item.contextTokens > 0 ? ` (${fmtK(item.contextTokens)})` : '';
+            opt.textContent = `${prefix}${item.title || item.conversationId.slice(0, 8)}${tokPart}`;
             select.appendChild(opt);
           }
-          if (prevValue) select.value = prevValue;
+
+          if (followActive) {
+            select.value = '__auto__';
+          } else {
+            const targetVal = selectedConvId || currentId;
+            if (targetVal) select.value = targetVal;
+          }
         }
 
-        const stats = data.current;
-        if (!stats || !stats.exists || stats.totalModelSteps === 0) {
-          $('token-count').textContent = '0';
-          $('token-limit-label').textContent = `/ ${fmtCompact(limitTokens)} (${s.newChat})`;
-          $('pct-pill').textContent = '0%';
+        renderScopeSelector(stats, s);
+
+        const effective = effectiveScopeFor(stats);
+        const scoped = stats?.scopedSnapshots?.[effective] || stats;
+        const hasData = Boolean(stats && stats.exists && scoped && scoped.totalModelSteps > 0);
+
+        if (!hasData) {
+          $('token-count').textContent = '—';
+          $('token-limit-label').textContent = `/ ${fmtCompact(limitTokens)} ${s.tokens}`;
+          $('pct-pill').textContent = '—';
           $('pct-pill').className = 'pct-pill zone-green';
           $('bar-fill').style.width = '0%';
           $('bar-fill').className = 'bar-fill fill-green';
+          $('alert-box').classList.add('hidden');
+          $('no-data-banner').textContent = s.noTokenLogsBanner;
+          $('no-data-banner').classList.remove('hidden');
+
+          $('lbl-model').textContent = isAggregateScope(effective) ? s.primaryModel : s.singleModel;
           $('m-model').textContent = '—';
+          $('m-effort').classList.add('hidden');
           $('m-delta').textContent = '—';
           $('m-cache').textContent = '—';
           $('m-peak').textContent = '—';
-          $('alert-box').classList.add('hidden');
+          $('m-io').textContent = '—';
+          $('m-dur').textContent = '—';
+
           $('steps-cols').style.display = 'none';
-          $('steps-list').innerHTML = `<div class="empty">${s.noSteps}</div>`;
-          renderBreakdown(null, s);
-          renderStatsTab(stats, data.periodStats, s);
+          $('steps-list').innerHTML = `<div class="empty">${escapeHtml(s.noSteps)}</div>`;
+          renderBreakdown(null, false, s);
+          renderStatsTab(data.periodStats, s);
           return;
         }
 
-        const used = stats.contextTokens || 0;
+        $('no-data-banner').classList.add('hidden');
+
+        const used = scoped.contextTokens || 0;
         const pct = Math.min(999, Math.round((used / limitTokens) * 100));
         const barPct = Math.min(100, (used / limitTokens) * 100);
-        const zone = pct >= 85 ? 'red' : pct >= 70 ? 'amber' : 'green';
+        const zone = pct >= 85 ? 'red' : pct >= 65 ? 'amber' : 'green';
 
         $('token-count').textContent = fmtNum(used);
         $('token-limit-label').textContent = `/ ${fmtCompact(limitTokens)} ${s.tokens}`;
@@ -1258,72 +2229,105 @@
         $('bar-fill').className = `bar-fill fill-${zone}`;
 
         const alertBox = $('alert-box');
-        if (stats.compactionEvents > 0 || zone !== 'green') {
+        if ((scoped.compactionEvents || 0) > 0 || zone !== 'green') {
           const msgs = [];
           if (zone === 'red') msgs.push(s.alertRed);
           else if (zone === 'amber') msgs.push(s.alertAmber);
-          if (stats.compactionEvents > 0) msgs.push(s.alertCompaction(stats.compactionEvents));
+          if ((scoped.compactionEvents || 0) > 0) msgs.push(s.alertCompaction(scoped.compactionEvents));
           alertBox.textContent = msgs.join(' ');
           alertBox.className = `alert ${zone === 'red' ? 'alert-red' : 'alert-amber'}`;
         } else {
           alertBox.classList.add('hidden');
         }
 
-        renderBreakdown(stats, s);
+        renderBreakdown(scoped, true, s);
 
-        const ss = stats.sessionStats || {};
-        const primary = ss.primaryModel || stats.model || '';
-        const modelDisplay = primary
-          ? (ss.otherModelsCount > 0 ? `${primary} (+${ss.otherModelsCount})` : primary)
+        const ss = scoped.sessionStats || {};
+        const agg = isAggregateScope(effective);
+        $('lbl-model').textContent = agg ? s.primaryModel : s.singleModel;
+
+        const disp = agg
+          ? (ss.primaryModelDisplay || scoped.modelDisplay || { name: ss.primaryModel || scoped.model || '', effort: null })
+          : (scoped.modelDisplay || ss.primaryModelDisplay || { name: scoped.model || ss.primaryModel || '', effort: null });
+
+        const modelNameText = disp.name
+          ? (agg && ss.otherModelsCount > 0 ? `${disp.name} (+${ss.otherModelsCount})` : disp.name)
           : '—';
-        $('m-model').textContent = modelDisplay;
-        $('m-model').title = modelDisplay;
+        $('m-model').textContent = modelNameText;
+        $('m-model').title = agg ? (ss.primaryModel || scoped.model || modelNameText) : (scoped.model || modelNameText);
 
-        const latestMsg = Array.isArray(stats.recentMessages) && stats.recentMessages.length > 0
-          ? stats.recentMessages[0]
+        const effortEl = $('m-effort');
+        if (disp.effort) {
+          effortEl.textContent = disp.effort;
+          effortEl.classList.remove('hidden');
+        } else {
+          effortEl.classList.add('hidden');
+        }
+
+        const latestMsg = Array.isArray(scoped.recentMessages) && scoped.recentMessages.length > 0
+          ? scoped.recentMessages[0]
           : null;
-        const deltaVal = historyMode === 'messages' && latestMsg ? latestMsg.delta : stats.lastDelta;
+        const deltaVal = historyMode === 'messages' && latestMsg ? latestMsg.delta : scoped.lastDelta;
         const dSign = deltaVal >= 0 ? '+' : '';
         $('m-delta').textContent = `${dSign}${fmtNum(deltaVal)}`;
 
-        if (historyMode === 'messages' && latestMsg) {
-          $('m-cache').textContent = `${fmtK(latestMsg.cacheReadTokens || 0)} (${latestMsg.cacheHitPercent || 0}%)`;
-        } else {
-          $('m-cache').textContent = `${fmtK(stats.lastCacheReadTokens)} (${stats.cacheHitPercent}%)`;
-        }
+        const stepCacheK = historyMode === 'messages' && latestMsg
+          ? fmtK(latestMsg.cacheReadTokens || 0)
+          : fmtK(scoped.lastCacheReadTokens || 0);
+        const stepCachePct = historyMode === 'messages' && latestMsg
+          ? (latestMsg.cacheHitPercent || 0)
+          : (scoped.cacheHitPercent || 0);
+        $('m-cache').textContent = `${stepCacheK} (${stepCachePct}% · ${ss.avgCacheHitPercent || 0}%)`;
 
-        const countNum = historyMode === 'messages' ? (ss.userMessageCount || 0) : stats.totalModelSteps;
-        $('m-peak').textContent = `${countNum} / ${fmtK(stats.peakTokens)}`;
+        const countNum = historyMode === 'messages' ? (ss.userMessageCount || 0) : (scoped.totalModelSteps || 0);
+        $('m-peak').textContent = `${countNum} / ${fmtK(scoped.peakTokens || 0)}`;
+        $('m-io').textContent = `${fmtCompact(ss.totalInputTokens || 0)} + ${fmtCompact(ss.totalOutputTokens || 0)}`;
+        $('m-dur').textContent = fmtDuration(ss.durationSeconds || 0);
 
         const rows = historyMode === 'messages'
-          ? (Array.isArray(stats.recentMessages) ? stats.recentMessages : [])
-          : (Array.isArray(stats.recentSteps) ? stats.recentSteps : []);
+          ? (Array.isArray(scoped.recentMessages) ? scoped.recentMessages : [])
+          : (Array.isArray(scoped.recentSteps) ? scoped.recentSteps : []);
 
         const stepsEl = $('steps-list');
         if (rows.length === 0) {
           $('steps-cols').style.display = 'none';
-          stepsEl.innerHTML = `<div class="empty">${s.noSteps}</div>`;
+          stepsEl.innerHTML = `<div class="empty">${escapeHtml(s.noSteps)}</div>`;
         } else {
           $('steps-cols').style.display = 'flex';
           stepsEl.innerHTML = rows
-            .slice(0, 6)
+            .slice(0, 5)
             .map((item) => {
               const idNum = historyMode === 'messages' ? item.turnIndex : item.stepIndex;
               const compacted = historyMode === 'messages' ? item.hadCompaction : item.isCompaction;
+              const modelSwitched = historyMode === 'messages' ? item.hadModelSwitch : item.isModelSwitch;
+              const effortSwitched = historyMode === 'messages' ? item.hadEffortSwitch : item.isEffortSwitch;
+
+              let rowCls = 'step-row';
+              if (compacted) rowCls += ' compacted';
+              else if (modelSwitched) rowCls += ' model-switched';
+              else if (effortSwitched) rowCls += ' effort-switched';
+
+              let badges = '';
+              if (compacted) badges += `<span class="ev-pill compact">${escapeHtml(s.compactedPill)}</span>`;
+              if (modelSwitched) badges += `<span class="ev-pill model">${escapeHtml(s.modelSwitchPill)}</span>`;
+              if (effortSwitched) badges += `<span class="ev-pill effort">${escapeHtml(s.effortSwitchPill)}</span>`;
+
               const sign = item.delta >= 0 ? '+' : '';
-              const badge = compacted ? `<span class="compact-pill">${s.compactedPill}</span>` : '';
+              const deltaCls = item.delta < 0 ? 'step-delta neg' : 'step-delta';
+
               return (
-                `<div class="step-row${compacted ? ' compacted' : ''}">` +
+                `<div class="${rowCls}">` +
                 `<span class="step-id">#${idNum}</span>` +
-                `<span class="step-mid"><span>${fmtNum(item.contextTokens)}</span>${badge}</span>` +
-                `<span class="step-delta">${sign}${fmtNum(item.delta)}</span>` +
+                `<span class="step-ctx">${fmtNum(item.contextTokens)}</span>` +
+                badges +
+                `<span class="${deltaCls}">${sign}${fmtNum(item.delta)}</span>` +
                 `</div>`
               );
             })
             .join('');
         }
 
-        renderStatsTab(stats, data.periodStats, s);
+        renderStatsTab(data.periodStats, s);
 
         const now = new Date();
         $('live-time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -1339,11 +2343,18 @@
             q.set('includeStats', '1');
             q.set('hours', String(periodHours));
           }
+          if (lastRev) q.set('rev', lastRev);
           const qs = q.toString();
           const fetcher = window.sidecar?.fetch ? window.sidecar.fetch.bind(window.sidecar) : fetch;
           const res = await fetcher(`/api/context${qs ? `?${qs}` : ''}`, { method: 'GET' });
           if (!res.ok) return;
           const data = await res.json();
+          if (data.unchanged) {
+            const now = new Date();
+            $('live-time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            return;
+          }
+          lastRev = data.rev || '';
           render(data);
         } catch {
           // ignore transient poll errors
