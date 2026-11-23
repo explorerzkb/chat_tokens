@@ -22,6 +22,14 @@ import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SidecarApp } from 'sidecar_sdk';
 
+let DatabaseSync = null;
+try {
+  ({ DatabaseSync } = await import('node:sqlite'));
+} catch {
+  // Node.js < 22.5: fall back to the sqlite3 CLI below.
+  DatabaseSync = null;
+}
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const HOME = homedir();
 const AGY_DIR = join(HOME, '.gemini', 'antigravity');
@@ -284,6 +292,24 @@ function readAppThemeState() {
 
 function querySQLiteJson(sql) {
   if (!existsSync(DB_PATH)) return null;
+  if (DatabaseSync) {
+    let db = null;
+    try {
+      db = new DatabaseSync(DB_PATH, { readOnly: true });
+      const rows = db.prepare(sql).all();
+      return Array.isArray(rows) ? rows : [];
+    } catch {
+      // Fall back to sqlite3 CLI if built-in sqlite fails to read the DB.
+    } finally {
+      if (db) {
+        try {
+          db.close();
+        } catch {
+          // ignore close errors
+        }
+      }
+    }
+  }
   try {
     const out = execFileSync('sqlite3', ['-readonly', '-json', DB_PATH, sql], {
       timeout: 400,

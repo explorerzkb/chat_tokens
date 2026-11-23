@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from datetime import datetime
 import json
+import locale
 import os
 import re
 import subprocess
@@ -144,6 +145,13 @@ def resolve_language(prefs: dict) -> str:
                 timeout=1,
             )
             if res.returncode == 0 and '"ru' in res.stdout.lower():
+                return "ru"
+        except Exception:
+            pass
+    elif sys.platform == "win32":
+        try:
+            win_loc = (locale.getlocale()[0] or "").lower()
+            if win_loc.startswith("ru") or "russian" in win_loc:
                 return "ru"
         except Exception:
             pass
@@ -766,6 +774,15 @@ def format_message(stats: dict | None, lang: str, threshold: int, history_mode: 
 
 
 def main() -> None:
+    # Ensure UTF-8 stdio on Windows systems with non-UTF-8 default code pages
+    # (e.g., cp936/cp1252) so emoji output and Cyrillic /чат input do not fail.
+    for stream in (sys.stdin, sys.stdout):
+        if hasattr(stream, "reconfigure"):
+            try:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+            except Exception:
+                pass
+
     try:
         raw = sys.stdin.read()
         payload = json.loads(raw) if raw.strip() else {}
@@ -807,7 +824,10 @@ def main() -> None:
         ],
         "terminationBehavior": "terminate",
     }
-    print(json.dumps(out, ensure_ascii=False))
+    try:
+        print(json.dumps(out, ensure_ascii=False))
+    except UnicodeEncodeError:
+        print(json.dumps(out, ensure_ascii=True))
 
 
 if __name__ == "__main__":

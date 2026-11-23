@@ -50,8 +50,8 @@ All-in-one, zero-dependency plugin for **Google Antigravity 2.0** combining:
 ## Requirements / Требования
 
 - **Google Antigravity 2.0** (Desktop app)
-- **Node.js** (bundled or installed on `PATH`)
-- **Python 3** (for the `/ctx` / `/чат` hook)
+- **Node.js** (bundled or installed on `PATH`; Node.js 22.5+ reads `conversation_summaries.db` natively via `node:sqlite` without requiring the `sqlite3` CLI)
+- **Python 3** (for the `/ctx` / `/чат` hook; on Windows, ensure `python3` is on `PATH` and not pointing to the disabled Microsoft Store alias)
 
 ---
 
